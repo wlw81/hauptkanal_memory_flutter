@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startGame() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return Game();
+      return Game('hauptkanalLinks');
     }));
   }
 }
