@@ -65,8 +65,42 @@ class _MyAppState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Image.asset('assets/hauptkanalLinks/image000.jpg')),
+    return MaterialApp(
+      title: '123',
+      home: Scaffold(
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            Center(child: Image.asset('assets/hauptkanalLinks/image000.jpg')),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                    child: Card(child: Image.asset('assets/hauptkanalLinks/image001.jpg')),
+                    width: 125,
+                    height: 170),
+                Container(
+                    child: Card(child: Image.asset('assets/hauptkanalLinks/image002.jpg')),
+                    width: 125,
+                    height: 170),
+                Card(
+                  child: InkWell(
+                    splashColor: Colors.blue.withAlpha(30),
+                    onTap: () {
+                      print('Card tapped.');
+                    },
+                    child: Container(
+                      width: 300,
+                      height: 100,
+                      child: Text('A card that can be tapped'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
