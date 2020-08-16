@@ -7,10 +7,12 @@ import 'dart:developer' as developer;
 
 import 'flags.dart';
 
-class Game extends StatefulWidget {
-  String currentStreet;
 
-  Game(@required this.currentStreet);
+String currentStreet;
+
+class Game extends StatefulWidget {
+
+  Game(currentStreet);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +23,8 @@ class Game extends StatefulWidget {
 class _MyAppState extends State<Game> {
   List imageNames = null;
   var randomImages;
-  int currentNumber = 0;
+  int currentNumber;
+  int score = 0;
   Image nextHouse;
   Image bitmapHouseAfter;
 
@@ -63,36 +66,47 @@ class _MyAppState extends State<Game> {
     _refillImages();
   }
 
+  _cardTapped(){
+    score++;
+    print('Card tapped.');
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '123',
+      title: 'Hauptkanal Memory',
       home: Scaffold(
         body: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            Center(child: Image.asset('assets/hauptkanalLinks/image000.jpg')),
+            Center(child: Image.asset('assets/'+currentStreet+'/image000.jpg')),
+            Center(child: Text('Score ' + score.toString())),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
-                    child: Card(child: Image.asset('assets/hauptkanalLinks/image001.jpg')),
+                    child: Card(
+                        child:
+                            Image.asset('assets/'+currentStreet+'/image001.jpg')),
                     width: 125,
                     height: 170),
                 Container(
-                    child: Card(child: Image.asset('assets/hauptkanalLinks/image002.jpg')),
+                    child: Card(
+                        child:
+                            Image.asset('assets/'+currentStreet+'/image002.jpg')),
                     width: 125,
                     height: 170),
                 Card(
                   child: InkWell(
                     splashColor: Colors.blue.withAlpha(30),
                     onTap: () {
-                      print('Card tapped.');
+                     _cardTapped();
                     },
                     child: Container(
-                      width: 300,
-                      height: 100,
-                      child: Text('A card that can be tapped'),
+                      width: 125,
+                      height: 170,
+                      child: Image.asset('assets/'+currentStreet+'/image002.jpg'),
                     ),
                   ),
                 ),

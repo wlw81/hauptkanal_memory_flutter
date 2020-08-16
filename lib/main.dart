@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hauptkanal_memory/flags.dart';
 import 'package:hauptkanal_memory/game.dart';
 
 void main() => runApp(MyApp());
@@ -91,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startGame() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return Game('hauptkanalLinks');
+      return Game(Flags.STREET_LEFT);
     }));
   }
 }
