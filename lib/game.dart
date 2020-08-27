@@ -4,14 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hauptkanal_memory/main.dart';
 import 'dart:developer' as developer;
+import "package:intl/intl.dart";
 
 import 'flags.dart';
-
 
 String currentStreet;
 
 class Game extends StatefulWidget {
-
   Game(currentStreet);
 
   @override
@@ -23,7 +22,7 @@ class Game extends StatefulWidget {
 class _MyAppState extends State<Game> {
   List imageNames = null;
   var randomImages;
-  int currentNumber;
+  int currentNumber = 0;
   int score = 0;
   Image nextHouse;
   Image bitmapHouseAfter;
@@ -40,8 +39,16 @@ class _MyAppState extends State<Game> {
     // bitmapHouseAfter = scaleBitmap(currentNumber + 1);
   }
 
-  getImage(int p_houseNumber) {
+  Image getImage(int p_houseNumber) {
     //String pathname = Directory('assets').path;
+    // var f = new NumberFormat("###.0#", "en_US");
+    var meinFormat = new NumberFormat();
+    meinFormat.minimumIntegerDigits = 3;
+
+    String test = meinFormat.format(p_houseNumber);
+    print(test);
+    return Image.asset(
+        'assets/' + currentStreet + '/image001.jpg');
   }
 
   List _getImageNames() {
@@ -66,11 +73,10 @@ class _MyAppState extends State<Game> {
     _refillImages();
   }
 
-  _cardTapped(){
+  _cardTapped() {
     score++;
     print('Card tapped.');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,33 +86,34 @@ class _MyAppState extends State<Game> {
         body: Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
-            Center(child: Image.asset('assets/'+currentStreet+'/image000.jpg')),
+            Center(child: getImage(0)),
             Center(child: Text('Score ' + score.toString())),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
                     child: Card(
-                        child:
-                            Image.asset('assets/'+currentStreet+'/image001.jpg')),
+                        child: Image.asset(
+                            'assets/' + currentStreet + '/image001.jpg')),
                     width: 125,
                     height: 170),
                 Container(
                     child: Card(
-                        child:
-                            Image.asset('assets/'+currentStreet+'/image002.jpg')),
+                        child: Image.asset(
+                            'assets/' + currentStreet + '/image002.jpg')),
                     width: 125,
                     height: 170),
                 Card(
                   child: InkWell(
                     splashColor: Colors.blue.withAlpha(30),
                     onTap: () {
-                     _cardTapped();
+                      _cardTapped();
                     },
                     child: Container(
                       width: 125,
                       height: 170,
-                      child: Image.asset('assets/'+currentStreet+'/image002.jpg'),
+                      child: Image.asset(
+                          'assets/' + currentStreet + '/image002.jpg'),
                     ),
                   ),
                 ),
