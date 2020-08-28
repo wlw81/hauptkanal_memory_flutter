@@ -26,13 +26,15 @@ class _MyAppState extends State<Game> {
   int score = 0;
   Image nextHouse;
   Image bitmapHouseAfter;
+  int lastRandomNumber;
+  int selectedIndex =-1;
 
   _refillImages() {
     //developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
 
     int randomHousenumber = -1;
     for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
-      randomHousenumber = _generateHousenumber(randomHousenumber);
+      randomHousenumber = _generateHousenumber();
       //randomImages.add(scaleBitmap(randomHousenumber));
     }
     nextHouse = getImage(currentNumber);
@@ -40,15 +42,18 @@ class _MyAppState extends State<Game> {
   }
 
   Image getImage(int p_houseNumber) {
-    //String pathname = Directory('assets').path;
-    // var f = new NumberFormat("###.0#", "en_US");
-    var meinFormat = new NumberFormat();
-    meinFormat.minimumIntegerDigits = 3;
+    var myFormat = new NumberFormat();
+    myFormat.minimumIntegerDigits = 3;
 
-    String test = meinFormat.format(p_houseNumber);
-    print(test);
-    return Image.asset(
-        'assets/' + currentStreet + '/image001.jpg');
+    return Image.asset('assets/' +
+        currentStreet +
+        '/image' +
+        myFormat.format(p_houseNumber) +
+        '.jpg');
+  }
+
+  Image getNextHouseImage() {
+    return getImage(currentNumber++);
   }
 
   List _getImageNames() {
@@ -59,12 +64,13 @@ class _MyAppState extends State<Game> {
     return imageNames;
   }
 
-  int _generateHousenumber(int p_lastResult) {
+  int _generateHousenumber() {
     int houseNumberGenerated = currentNumber;
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
-        houseNumberGenerated == p_lastResult) {
+        houseNumberGenerated == lastRandomNumber) {
       houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
+      lastRandomNumber = houseNumberGenerated;
     }
     return houseNumberGenerated;
   }
@@ -74,6 +80,8 @@ class _MyAppState extends State<Game> {
   }
 
   _cardTapped() {
+
+
     score++;
     print('Card tapped.');
   }
@@ -93,14 +101,13 @@ class _MyAppState extends State<Game> {
               children: [
                 Container(
                     child: Card(
-                        child: Image.asset(
-                            'assets/' + currentStreet + '/image001.jpg')),
+                        child: InkWell(
+                            onTap: _cardTapped,
+                            child: getImage(_generateHousenumber()))),
                     width: 125,
                     height: 170),
                 Container(
-                    child: Card(
-                        child: Image.asset(
-                            'assets/' + currentStreet + '/image002.jpg')),
+                    child: Card(child: getImage(_generateHousenumber())),
                     width: 125,
                     height: 170),
                 Card(
@@ -112,8 +119,7 @@ class _MyAppState extends State<Game> {
                     child: Container(
                       width: 125,
                       height: 170,
-                      child: Image.asset(
-                          'assets/' + currentStreet + '/image002.jpg'),
+                      child: getImage(_generateHousenumber()),
                     ),
                   ),
                 ),
