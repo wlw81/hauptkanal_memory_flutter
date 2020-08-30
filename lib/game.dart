@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hauptkanal_memory/cards.dart';
 import 'package:hauptkanal_memory/main.dart';
 import 'dart:developer' as developer;
 import "package:intl/intl.dart";
@@ -27,7 +28,7 @@ class _MyAppState extends State<Game> {
   Image nextHouse;
   Image bitmapHouseAfter;
   int lastRandomNumber;
-  int selectedIndex =-1;
+  int selectedIndex = -1;
 
   _refillImages() {
     //developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
@@ -80,14 +81,21 @@ class _MyAppState extends State<Game> {
   }
 
   _cardTapped() {
-
-
     score++;
     print('Card tapped.');
   }
 
+  List<Image> _generateCard_Images(){
+    List<Image> generatedImages = new List();
+    for(int i = 0; i < Flags.RANDOM_CARD_COUNT; i++){
+      generatedImages.add(getImage(_generateHousenumber()));
+    }
+    return generatedImages;
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Hauptkanal Memory',
       home: Scaffold(
@@ -96,35 +104,7 @@ class _MyAppState extends State<Game> {
           children: <Widget>[
             Center(child: getImage(0)),
             Center(child: Text('Score ' + score.toString())),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                    child: Card(
-                        child: InkWell(
-                            onTap: _cardTapped,
-                            child: getImage(_generateHousenumber()))),
-                    width: 125,
-                    height: 170),
-                Container(
-                    child: Card(child: getImage(_generateHousenumber())),
-                    width: 125,
-                    height: 170),
-                Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      _cardTapped();
-                    },
-                    child: Container(
-                      width: 125,
-                      height: 170,
-                      child: getImage(_generateHousenumber()),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            Cards(_cardTapped(),_generateCard_Images())
           ],
         ),
       ),
