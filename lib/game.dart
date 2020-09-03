@@ -29,6 +29,7 @@ class _MyAppState extends State<Game> {
   Image bitmapHouseAfter;
   int lastRandomNumber;
   int selectedIndex = -1;
+  List<Image> _generatedImages;
 
   _refillImages() {
     //developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
@@ -80,17 +81,21 @@ class _MyAppState extends State<Game> {
     _refillImages();
   }
 
-  _cardTapped() {
+  _cardTapped(int p_selectedIndex) {
+    selectedIndex = p_selectedIndex;
+    String selectedFilename = _generatedImages.elementAt(p_selectedIndex).toStringShort();
+
+
     score++;
     print('Card tapped.');
   }
 
-  List<Image> _generateCard_Images(){
-    List<Image> generatedImages = new List();
+  List<Image> _generateCardImages(){
+    _generatedImages = new List();
     for(int i = 0; i < Flags.RANDOM_CARD_COUNT; i++){
-      generatedImages.add(getImage(_generateHousenumber()));
+      _generatedImages.add(getImage(_generateHousenumber()));
     }
-    return generatedImages;
+    return _generatedImages;
   }
 
   @override
@@ -104,7 +109,7 @@ class _MyAppState extends State<Game> {
           children: <Widget>[
             Center(child: getImage(0)),
             Center(child: Text('Score ' + score.toString())),
-            Cards(_cardTapped(),_generateCard_Images())
+            Cards(_cardTapped(selectedIndex),_generateCardImages())
           ],
         ),
       ),

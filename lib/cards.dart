@@ -18,7 +18,7 @@ class Cards extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: Flags.RANDOM_CARD_COUNT, itemBuilder: (BuildContext context, int position) {
                 return InkWell(
-                  onTap: _cardTapped,
+                  onTap: _cardTapped(position),
                   child: Container(
                     width: 150,
                     child: Card(
