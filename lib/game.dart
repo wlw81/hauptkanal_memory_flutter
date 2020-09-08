@@ -6,10 +6,12 @@ import 'package:hauptkanal_memory/cards.dart';
 import 'package:hauptkanal_memory/main.dart';
 import 'dart:developer' as developer;
 import "package:intl/intl.dart";
+import 'dart:developer';
+
 
 import 'flags.dart';
 
-String currentStreet;
+String currentStreet = Flags.STREET_LEFT;
 
 class Game extends StatefulWidget {
   Game(currentStreet);
@@ -21,7 +23,7 @@ class Game extends StatefulWidget {
 }
 
 class _MyAppState extends State<Game> {
-  List imageNames = null;
+  List imageNames;
   var randomImages;
   int currentNumber = 0;
   int score = 0;
@@ -46,12 +48,14 @@ class _MyAppState extends State<Game> {
   Image getImage(int p_houseNumber) {
     var myFormat = new NumberFormat();
     myFormat.minimumIntegerDigits = 3;
-
-    return Image.asset('assets/' +
+    var path = 'assets/' +
         currentStreet +
         '/image' +
         myFormat.format(p_houseNumber) +
-        '.jpg');
+        '.jpg';
+
+    developer.log(path);
+    return Image.asset(path);
   }
 
   Image getNextHouseImage() {
@@ -60,9 +64,23 @@ class _MyAppState extends State<Game> {
 
   List _getImageNames() {
     if (null == imageNames) {
-      imageNames = Directory('assets').listSync();
+      var systemTempDir = Directory.systemTemp;
+
+      // hier muss ich frickeln
+      imageNames = List();
+
+      // List directory contents, recursing into sub-directories,
+      // but not following symbolic links.
+      systemTempDir
+          .list(recursive: true, followLinks: false)
+          .listen((FileSystemEntity entity) {
+        if (entity.path.contains(currentStreet) && entity.path.contains('jpg')) {
+          imageNames.add(entity.path);
+        }
+      });
     }
 
+    developer.log('Current image count: '+imageNames.length.toString());
     return imageNames;
   }
 
@@ -82,17 +100,20 @@ class _MyAppState extends State<Game> {
   }
 
   _cardTapped(int p_selectedIndex) {
-    selectedIndex = p_selectedIndex;
-    String selectedFilename = _generatedImages.elementAt(p_selectedIndex).toStringShort();
-
-
-    score++;
-    print('Card tapped.');
+    if (p_selectedIndex > -1 && _generatedImages != null) {
+      stdout.writeln('Card tapped.');
+      selectedIndex = p_selectedIndex;
+      String selectedFilename =
+          _generatedImages.elementAt(p_selectedIndex).toStringShort();
+      developer.log('Selected image: ' + selectedFilename);
+      score++;
+      developer.log('Current score: ' + score.toString());
+    }
   }
 
-  List<Image> _generateCardImages(){
+  List<Image> _generateCardImages() {
     _generatedImages = new List();
-    for(int i = 0; i < Flags.RANDOM_CARD_COUNT; i++){
+    for (int i = 0; i < Flags.RANDOM_CARD_COUNT; i++) {
       _generatedImages.add(getImage(_generateHousenumber()));
     }
     return _generatedImages;
@@ -100,7 +121,6 @@ class _MyAppState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Hauptkanal Memory',
       home: Scaffold(
@@ -109,7 +129,7 @@ class _MyAppState extends State<Game> {
           children: <Widget>[
             Center(child: getImage(0)),
             Center(child: Text('Score ' + score.toString())),
-            Cards(_cardTapped(selectedIndex),_generateCardImages())
+            Cards(_cardTapped(selectedIndex), _generateCardImages())
           ],
         ),
       ),
