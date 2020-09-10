@@ -24,7 +24,7 @@ class Game extends StatefulWidget {
 
 class _MyAppState extends State<Game> {
   List imageNames;
-  var randomImages;
+  var randomImages = List();
   int currentNumber = 0;
   int score = 0;
   Image nextHouse;
@@ -34,7 +34,7 @@ class _MyAppState extends State<Game> {
   List<Image> _generatedImages;
 
   _refillImages() {
-    //developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
+    developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
 
     int randomHousenumber = -1;
     for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
@@ -63,11 +63,10 @@ class _MyAppState extends State<Game> {
   }
 
   List _getImageNames() {
-    if (null == imageNames) {
+    if (imageNames.isEmpty) {
       var systemTempDir = Directory.systemTemp;
 
       // hier muss ich frickeln
-      imageNames = List();
 
       // List directory contents, recursing into sub-directories,
       // but not following symbolic links.
