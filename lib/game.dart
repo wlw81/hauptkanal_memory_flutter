@@ -23,7 +23,7 @@ class Game extends StatefulWidget {
 
 class _MyAppState extends State<Game> {
   List imageNames;
-  var randomImages;
+  var randomImages = List();
   int currentNumber = 0;
   int score = 0;
   Image nextHouse;
@@ -33,7 +33,8 @@ class _MyAppState extends State<Game> {
   List<Image> _generatedImages;
 
   _refillImages() {
-    //developer.log('Refilling images, currently ' + randomImages.size() + ' in stock.');
+    developer.log(
+        'Refilling images, currently ' + randomImages.size() + ' in stock.');
 
     int randomHousenumber = -1;
     for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
@@ -62,11 +63,10 @@ class _MyAppState extends State<Game> {
   }
 
   List _getImageNames() {
-    if (null == imageNames) {
+    if (imageNames.isEmpty) {
       var systemTempDir = Directory.systemTemp;
 
       // hier muss ich frickeln
-      imageNames = List();
 
       // List directory contents, recursing into sub-directories,
       // but not following symbolic links.
@@ -105,13 +105,19 @@ class _MyAppState extends State<Game> {
   }
 
   _cardTapped(int p_selectedIndex) {
-    if (p_selectedIndex > -1 && _generatedImages != null) {
+    if (p_selectedIndex > -1 && _generatedImages.isNotEmpty) {
       stdout.writeln('Card tapped.');
       selectedIndex = p_selectedIndex;
       String selectedFilename =
-          _generatedImages.elementAt(p_selectedIndex).toStringShort();
+      _generatedImages.elementAt(p_selectedIndex).toStringShort();
       developer.log('Selected image: ' + selectedFilename);
-      score++;
+      String correctFilename =
+      _generatedImages.elementAt(currentNumber + 1).toStringShort();
+      if (selectedFilename.compareTo(correctFilename) == 0) {
+        score++;
+      } else {
+        score--;
+      }
       developer.log('Current score: ' + score.toString());
     }
   }
