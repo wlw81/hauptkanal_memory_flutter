@@ -8,7 +8,6 @@ import 'dart:developer' as developer;
 import "package:intl/intl.dart";
 import 'dart:developer';
 
-
 import 'flags.dart';
 
 String currentStreet = Flags.STREET_LEFT;
@@ -74,13 +73,14 @@ class _MyAppState extends State<Game> {
       systemTempDir
           .list(recursive: true, followLinks: false)
           .listen((FileSystemEntity entity) {
-        if (entity.path.contains(currentStreet) && entity.path.contains('jpg')) {
+        if (entity.path.contains(currentStreet) &&
+            entity.path.contains('jpg')) {
           imageNames.add(entity.path);
         }
       });
     }
 
-    developer.log('Current image count: '+imageNames.length.toString());
+    developer.log('Current image count: ' + imageNames.length.toString());
     return imageNames;
   }
 
@@ -89,9 +89,14 @@ class _MyAppState extends State<Game> {
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
         houseNumberGenerated == lastRandomNumber) {
-      houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
-      lastRandomNumber = houseNumberGenerated;
+      if (null == imageNames) {
+        houseNumberGenerated = Random.secure().nextInt(Flags.TEMP_IMG_COUNT);
+      } else {
+        houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
+      }
+
     }
+    lastRandomNumber = houseNumberGenerated;
     return houseNumberGenerated;
   }
 
