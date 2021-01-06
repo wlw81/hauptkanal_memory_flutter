@@ -17,16 +17,15 @@ class Cards extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: Flags.RANDOM_CARD_COUNT,
-            itemBuilder: (BuildContext context, int position) {
-              return InkWell(
-                child: Container(
-                  width: 150,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
                   child: Card(
                     elevation: 5,
-                    child: _assets.elementAt(position),
+                    child: _assets.elementAt(index),
                   ),
-                ),
-                onTap: cardTapped(position),
+                onTap: () => Scaffold
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text(index.toString()))),
               );
             }),
       )),
