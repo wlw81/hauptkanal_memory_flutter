@@ -6,7 +6,6 @@ import 'package:hauptkanal_memory/cards.dart';
 import 'package:hauptkanal_memory/main.dart';
 import 'dart:developer' as developer;
 import "package:intl/intl.dart";
-import 'dart:developer';
 
 import 'flags.dart';
 
@@ -23,7 +22,7 @@ class Game extends StatefulWidget {
 
 class _MyAppState extends State<Game> {
   List imageNames;
-  var randomImages = List();
+  List randomImages;
   int currentNumber = 0;
   int score = 0;
   Image nextHouse;
@@ -34,7 +33,7 @@ class _MyAppState extends State<Game> {
 
   _refillImages() {
     developer.log(
-        'Refilling images, currently ' + randomImages.size() + ' in stock.');
+        'Refilling images, currently ' + randomImages.length.toString() + ' in stock.');
 
     int randomHousenumber = -1;
     for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
@@ -140,7 +139,7 @@ class _MyAppState extends State<Game> {
           children: <Widget>[
             Center(child: getImage(0)),
             Center(child: Text('Score ' + score.toString())),
-            Cards(_cardTapped(selectedIndex), _generateCardImages())
+            Cards(_generateCardImages())
           ],
         ),
       ),
