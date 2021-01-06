@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:hauptkanal_memory/cards.dart';
 import 'package:hauptkanal_memory/main.dart';
 import 'dart:developer' as developer;
 import "package:intl/intl.dart";
@@ -28,12 +27,12 @@ class _MyAppState extends State<Game> {
   Image nextHouse;
   Image bitmapHouseAfter;
   int lastRandomNumber;
-  int selectedIndex = -1;
-  List<Image> _generatedImages;
+  List<Image> _generatedRandomImages;
 
   _refillImages() {
-    developer.log(
-        'Refilling images, currently ' + randomImages.length.toString() + ' in stock.');
+    developer.log('Refilling images, currently ' +
+        randomImages.length.toString() +
+        ' in stock.');
 
     int randomHousenumber = -1;
     for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
@@ -57,15 +56,9 @@ class _MyAppState extends State<Game> {
     return Image.asset(path);
   }
 
-  Image getNextHouseImage() {
-    return getImage(currentNumber++);
-  }
-
   List _getImageNames() {
     if (imageNames.isEmpty) {
       var systemTempDir = Directory.systemTemp;
-
-      // hier muss ich frickeln
 
       // List directory contents, recursing into sub-directories,
       // but not following symbolic links.
@@ -93,7 +86,6 @@ class _MyAppState extends State<Game> {
       } else {
         houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
       }
-
     }
     lastRandomNumber = houseNumberGenerated;
     return houseNumberGenerated;
@@ -104,45 +96,68 @@ class _MyAppState extends State<Game> {
   }
 
   _cardTapped(int p_selectedIndex) {
-    if (p_selectedIndex > -1 && _generatedImages.isNotEmpty) {
-      stdout.writeln('Card tapped.');
-      selectedIndex = p_selectedIndex;
-      String selectedFilename =
-      _generatedImages.elementAt(p_selectedIndex).toStringShort();
-      developer.log('Selected image: ' + selectedFilename);
-      String correctFilename =
-      _generatedImages.elementAt(currentNumber + 1).toStringShort();
-      if (selectedFilename.compareTo(correctFilename) == 0) {
-        score++;
-      } else {
-        score--;
+    setState(() {
+      developer.log('Confirmed card tapped: ' + p_selectedIndex.toString());
+      if (p_selectedIndex > -1 && _generatedRandomImages.isNotEmpty) {
+        String selectedFilename =
+            _generatedRandomImages.elementAt(p_selectedIndex).toStringShort();
+        developer.log('Selected image: ' + selectedFilename);
+        String correctFilename =
+            _getImageNames().elementAt(currentNumber + 1).toStringShort();
+        if (selectedFilename.compareTo(correctFilename) == 0) {
+          score++;
+          currentNumber++;
+        } else {
+          score--;
+        }
+        developer.log('Current score: ' + score.toString());
       }
-      developer.log('Current score: ' + score.toString());
-    }
+    });
   }
 
-  List<Image> _generateCardImages() {
-    _generatedImages = new List();
+  List<Image> _generateRandomCardImages() {
+    _generatedRandomImages = new List();
     for (int i = 0; i < Flags.RANDOM_CARD_COUNT; i++) {
-      _generatedImages.add(getImage(_generateHousenumber()));
+      _generatedRandomImages.add(getImage(_generateHousenumber()));
     }
-    return _generatedImages;
+    return _generatedRandomImages;
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hauptkanal Memory',
-      home: Scaffold(
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            Center(child: getImage(0)),
-            Center(child: Text('Score ' + score.toString())),
-            Cards(_generateCardImages())
-          ],
-        ),
-      ),
-    );
+        title: 'Hauptkanal Memory',
+        home: Scaffold(
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              Center(child: getImage(currentNumber)),
+              Container(
+                  alignment: Alignment.topRight,
+                  padding: EdgeInsets.all(25.0),
+                  child: Text('Score ' + score.toString(),
+                      style: TextStyle(color: Colors.red, fontSize: 20.0))),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                Expanded(
+                    child: SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: Flags.RANDOM_CARD_COUNT,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          child: Card(
+                            elevation: 5,
+                            child: _generateRandomCardImages().elementAt(index),
+                          ),
+                          onTap: () => _cardTapped(index),
+                        );
+                      }),
+                )),
+              ])
+            ],
+          ),
+        ));
   }
 }
