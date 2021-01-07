@@ -20,28 +20,14 @@ class Game extends StatefulWidget {
 }
 
 class _MyAppState extends State<Game> {
-  List imageNames;
+  List<FileSystemEntity> imageNames;
   List randomImages;
   int currentNumber = 0;
   int score = 0;
   Image nextHouse;
   Image bitmapHouseAfter;
   int lastRandomNumber;
-  List<Image> _generatedRandomImages;
-
-  _refillImages() {
-    developer.log('Refilling images, currently ' +
-        randomImages.length.toString() +
-        ' in stock.');
-
-    int randomHousenumber = -1;
-    for (int i = 0; i < Flags.RANDOM_IMAGES; i++) {
-      randomHousenumber = _generateHousenumber();
-      //randomImages.add(scaleBitmap(randomHousenumber));
-    }
-    nextHouse = getImage(currentNumber);
-    // bitmapHouseAfter = scaleBitmap(currentNumber + 1);
-  }
+  List<Image> _nextRandomImages;
 
   Image getImage(int p_houseNumber) {
     var myFormat = new NumberFormat();
@@ -56,23 +42,22 @@ class _MyAppState extends State<Game> {
     return Image.asset(path);
   }
 
-  List _getImageNames() {
-    if (imageNames.isEmpty) {
+  List<FileSystemEntity> _getImageNames() {
+    if (imageNames == null || imageNames.isEmpty) {
+      imageNames = List<FileSystemEntity>();
       var systemTempDir = Directory.systemTemp;
 
       // List directory contents, recursing into sub-directories,
       // but not following symbolic links.
-      systemTempDir
-          .list(recursive: true, followLinks: false)
-          .listen((FileSystemEntity entity) {
-        if (entity.path.contains(currentStreet) &&
-            entity.path.contains('jpg')) {
-          imageNames.add(entity.path);
-        }
-      });
-    }
+      systemTempDir.listSync(recursive: true, followLinks: false).forEach(
+          (element) => (element.path.contains(currentStreet) &&
+                  element.path.contains('jpg'))
+              ? imageNames.add(element)
+              : developer.log('not my beer -> '+element.toString()));
 
-    developer.log('Current image count: ' + imageNames.length.toString());
+      imageNames.forEach((element) => developer.log('Added to image list: '+element.path.toString()));
+      developer.log('Current image count: ' + imageNames.length.toString());
+    }
     return imageNames;
   }
 
@@ -81,46 +66,48 @@ class _MyAppState extends State<Game> {
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
         houseNumberGenerated == lastRandomNumber) {
-      if (null == imageNames) {
-        houseNumberGenerated = Random.secure().nextInt(Flags.TEMP_IMG_COUNT);
-      } else {
-        houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
-      }
+      houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
     }
     lastRandomNumber = houseNumberGenerated;
     return houseNumberGenerated;
   }
 
-  _displayHousenumber() {
-    _refillImages();
-  }
-
   _cardTapped(int p_selectedIndex) {
-    setState(() {
-      developer.log('Confirmed card tapped: ' + p_selectedIndex.toString());
-      if (p_selectedIndex > -1 && _generatedRandomImages.isNotEmpty) {
-        String selectedFilename =
-            _generatedRandomImages.elementAt(p_selectedIndex).toStringShort();
-        developer.log('Selected image: ' + selectedFilename);
-        String correctFilename =
-            _getImageNames().elementAt(currentNumber + 1).toStringShort();
-        if (selectedFilename.compareTo(correctFilename) == 0) {
+    developer.log('Confirmed card tapped: ' + p_selectedIndex.toString());
+    if (p_selectedIndex > -1 && _nextRandomImages.isNotEmpty) {
+      String selectedFilename =
+          _nextRandomImages.elementAt(p_selectedIndex).toString();
+      String correctFilename =
+          getImage(currentNumber + 1 ).toString();
+      correctFilename =
+          correctFilename.substring(correctFilename.lastIndexOf('/'));
+      correctFilename =
+          correctFilename.substring(0, correctFilename.indexOf('jpg'));
+
+      developer.log('Selected image: ' +
+          selectedFilename +
+          ', correct image: ' +
+          correctFilename);
+
+      setState(() {
+        if (selectedFilename.contains(correctFilename)) {
           score++;
           currentNumber++;
         } else {
           score--;
         }
         developer.log('Current score: ' + score.toString());
-      }
-    });
+      });
+    }
   }
 
   List<Image> _generateRandomCardImages() {
-    _generatedRandomImages = new List();
-    for (int i = 0; i < Flags.RANDOM_CARD_COUNT; i++) {
-      _generatedRandomImages.add(getImage(_generateHousenumber()));
+    _nextRandomImages = new List();
+    for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
+      _nextRandomImages.add(getImage(_generateHousenumber()));
     }
-    return _generatedRandomImages;
+    _nextRandomImages.add(getImage(currentNumber + 1));
+    return _nextRandomImages;
   }
 
   @override

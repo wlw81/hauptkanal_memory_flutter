@@ -9,5 +9,4 @@ class Flags {
   static const int RC_SIGN_IN = 42;
   static const String ACHIEVMENT = "CgkIprKIoKsaEAIQAg";
   static const int RANDOM_CARD_COUNT = 3;
-  static const int TEMP_IMG_COUNT = 25;
 }
