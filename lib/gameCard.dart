@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'flags.dart';
 
 class GameCard extends StatefulWidget {
-  final Image elementAt;
+  final Image cardImage;
 
-  GameCard(this.elementAt);
+  GameCard(this.cardImage);
 
   @override
   State<StatefulWidget> createState() {
@@ -15,44 +15,40 @@ class GameCard extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<GameCard> {
-  // Define the various properties with default values. Update these properties
-  // when the user taps a FloatingActionButton.
-
-  double _width = 50;
-  double _height = 50;
+class _MyAppState extends State<GameCard>  with SingleTickerProviderStateMixin{
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      end: Offset.zero,
+      begin: const Offset(0, 1.5),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticIn,
+    ));
   }
 
-  runAnimation(){
-    setState(() {
-      final random = Random();
-
-      // Generate a random width and height.
-      _width = random.nextInt(300).toDouble();
-      _height = random.nextInt(300).toDouble();
-    });
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // runAnimation();
-    return AnimatedContainer(
-      //width: _width,
-      //height: _height,
-      // Use the properties stored in the State class.
-      // Define how long the animation should take.
-      duration: Duration(seconds: 1),
-      // Provide an optional curve to make the animation feel smoother.
-      curve: Curves.fastOutSlowIn,
-      child: Card(
-        elevation: 5,
-        child: widget.elementAt,
-      ),
-    );
+    return SlideTransition(
+        position: _offsetAnimation,
+          child: Card(
+            elevation: 5,
+            child: widget.cardImage,
+          ),
+          );
   }
 }
