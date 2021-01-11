@@ -3,8 +3,7 @@ import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:math';
 
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanal_memory/gameCard.dart';
@@ -13,7 +12,7 @@ import "package:intl/intl.dart";
 import 'flags.dart';
 
 class Game extends StatefulWidget {
-  String currentStreet = Flags.STREET_LEFT;
+  final String currentStreet;
 
   Game(this.currentStreet);
 
@@ -23,9 +22,8 @@ class Game extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<Game> {
-  AudioPlayer player = AudioPlayer(); //add this
-  AudioCache cache = new AudioCache(); //and this
+class _MyAppState extends State<Game> with TickerProviderStateMixin {
+  final assetsAudioPlayer = AssetsAudioPlayer();
   List<FileSystemEntity> imageNames;
   List randomImages;
   int currentNumber = 0;
@@ -59,18 +57,17 @@ class _MyAppState extends State<Game> {
 
   @override
   void dispose() {
-    player.dispose();
     _timer.cancel();
     super.dispose();
   }
 
-  Image getImage(int p_houseNumber) {
+  Image getImage(int pHouseNumber) {
     var myFormat = new NumberFormat();
     myFormat.minimumIntegerDigits = 3;
     var path = 'assets/' +
         widget.currentStreet +
         '/image' +
-        myFormat.format(p_houseNumber) +
+        myFormat.format(pHouseNumber) +
         '.jpg';
 
     return Image.asset(path);
@@ -115,27 +112,24 @@ class _MyAppState extends State<Game> {
     return houseNumberGenerated;
   }
 
-  void playFlickAudio() async {
-    try{
-      player = await cache.play('flick.wav');
-    }catch (Exception){
-      developer.log(Exception.toString());
-    }
+  playFlickAudio() async {
+    assetsAudioPlayer.open(
+        Audio("assets/flick.wav"));
+    assetsAudioPlayer.play();
+
   }
 
-  void playWrongAudio() async {
-    try{
-      player = await cache.play('suck.wav');
-    }catch (Exception){
-      developer.log(Exception.toString());
-    }
+  playWrongAudio() async {
+    assetsAudioPlayer.open(
+        Audio("assets/bad.mp3"));
+    assetsAudioPlayer.play();
   }
 
-  _cardTapped(int p_selectedIndex) {
-    developer.log('Confirmed card tapped: ' + p_selectedIndex.toString());
-    if (p_selectedIndex > -1 && _nextRandomImages.isNotEmpty) {
+  _cardTapped(int pSelectedIndex) {
+    developer.log('Confirmed card tapped: ' + pSelectedIndex.toString());
+    if (pSelectedIndex > -1 && _nextRandomImages.isNotEmpty) {
       String selectedFilename =
-          _nextRandomImages.elementAt(p_selectedIndex).toString();
+          _nextRandomImages.elementAt(pSelectedIndex).toString();
       String correctFilename = getImage(currentNumber + 1).toString();
       correctFilename =
           correctFilename.substring(correctFilename.lastIndexOf('/'));
@@ -149,14 +143,15 @@ class _MyAppState extends State<Game> {
 
       if (selectedFilename.contains(correctFilename)) {
         playFlickAudio();
+        preCacheNextImage();
         setState(() {
           _nextRandomImages.clear();
           score++;
           currentNumber++;
         });
-        precacheImage(AssetImage(_getImageNames().elementAt(currentNumber+1).path), context);
+
       } else {
-        playWrongAudio();
+         playWrongAudio();
         score--;
       }
       developer.log('Current score: ' + score.toString());
@@ -204,26 +199,47 @@ class _MyAppState extends State<Game> {
                   alignment: Alignment.topRight,
                   padding: EdgeInsets.all(25.0),
                   child: Text('Score ' + score.toString(),
-                      style: GoogleFonts.roboto(fontSize: 25, textStyle: TextStyle(color: Colors.white54)))),
+                      style: GoogleFonts.roboto(
+                          fontSize: 25,
+                          textStyle: TextStyle(color: Colors.white54)))),
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 Expanded(
                     child: SizedBox(
-                  height: 200,
-                  child: Container(padding:EdgeInsets.only(bottom: 10.5, left: 2.5, right:  2.5, top: 15.0), child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: Flags.RANDOM_CARD_COUNT,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          child: GameCard(
-                              _generateRandomCardImages().elementAt(index)),
-                          onTap: () => _cardTapped(index),
-                        );
-                      }),)
-                )),
+                        height: 200,
+                        child: Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: 10.5, left: 2.5, right: 2.5, top: 15.0),
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: Flags.RANDOM_CARD_COUNT,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return GestureDetector(
+                                      child: GameCard(
+                                          this,
+                                          index,
+                                          _generateRandomCardImages()
+                                              .elementAt(index)),
+                                      onTap: () => _cardTapped(index),
+                                    );
+                                  }),
+                            )
+                        )),
               ])
             ],
           ),
         ));
+  }
+
+  void preCacheNextImage() async {
+  try{
+    await precacheImage(
+        Image.file(
+            _getImageNames().elementAt(currentNumber)).image,
+        context);
+  }catch(Exception){
+    developer.log('Failed to pre cache: '+ Exception.toString());
+  }
+  
   }
 }
