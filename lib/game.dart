@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hauptkanal_memory/gameCard.dart';
+import 'package:hauptkanal_memory/cardSelector.dart';
 import "package:intl/intl.dart";
 
 import 'flags.dart';
@@ -113,15 +113,12 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   playFlickAudio() async {
-    assetsAudioPlayer.open(
-        Audio("assets/flick.wav"));
+    assetsAudioPlayer.open(Audio("assets/flick.wav"));
     assetsAudioPlayer.play();
-
   }
 
   playWrongAudio() async {
-    assetsAudioPlayer.open(
-        Audio("assets/bad.mp3"));
+    assetsAudioPlayer.open(Audio("assets/bad.mp3"));
     assetsAudioPlayer.play();
   }
 
@@ -149,9 +146,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           score++;
           currentNumber++;
         });
-
       } else {
-         playWrongAudio();
+        playWrongAudio();
         score--;
       }
       developer.log('Current score: ' + score.toString());
@@ -207,24 +203,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                     child: SizedBox(
                         height: 200,
                         child: Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: 10.5, left: 2.5, right: 2.5, top: 15.0),
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: Flags.RANDOM_CARD_COUNT,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return GestureDetector(
-                                      child: GameCard(
-                                          this,
-                                          index,
-                                          _generateRandomCardImages()
-                                              .elementAt(index)),
-                                      onTap: () => _cardTapped(index),
-                                    );
-                                  }),
-                            )
-                        )),
+                            padding: EdgeInsets.only(
+                                bottom: 10.5, left: 2.5, right: 2.5, top: 15.0),
+                            child: CardSelector(_generateRandomCardImages(), _cardTapped)))),
               ])
             ],
           ),
@@ -232,14 +213,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   void preCacheNextImage() async {
-  try{
-    await precacheImage(
-        Image.file(
-            _getImageNames().elementAt(currentNumber)).image,
-        context);
-  }catch(Exception){
-    developer.log('Failed to pre cache: '+ Exception.toString());
-  }
-  
+    try {
+       precacheImage(
+          Image.file(_getImageNames().elementAt(currentNumber)).image, context);
+    } catch (Exception) {
+      developer.log('Failed to pre cache: ' + Exception.toString());
+    }
   }
 }
