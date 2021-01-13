@@ -1,14 +1,9 @@
-import 'dart:io';
-import 'dart:math';
+import 'dart:developer' as developer;
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
-
-import 'flags.dart';
 
 class GameCardItem extends StatefulWidget {
-
   Image cardImage;
   int animationOrder;
 
@@ -18,31 +13,21 @@ class GameCardItem extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _MyAppState();
   }
-
 }
 
-class _MyAppState extends State<GameCardItem> with SingleTickerProviderStateMixin {
-
+class _MyAppState extends State<GameCardItem>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
   int beginAnimation = 0;
-  final assetsAudioPlayer = AssetsAudioPlayer();
-  Image _cardImage;
-
-  @override
-  void setState(fn) {
-    super.setState(fn);
-    developer.log('SET STATEEEEEE!!!!!');
-    delay();
-  }
+  final _assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   void initState() {
     super.initState();
 
-    beginAnimation += (widget.animationOrder+1) * 400;
-    developer.log('begin animation '+ beginAnimation.toString());
-    assetsAudioPlayer.open(Audio("assets/suck.wav"));
+    beginAnimation += (widget.animationOrder + 1) * 400;
+    developer.log('begin animation ' + beginAnimation.toString());
 
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
@@ -52,46 +37,49 @@ class _MyAppState extends State<GameCardItem> with SingleTickerProviderStateMixi
     _offsetAnimation = Tween<Offset>(
       end: Offset.zero,
       begin: const Offset(0.0, 1.2),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-       curve: Curves.elasticOut)
-    );
-
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
     delay();
   }
 
-
-  delay(){
+  delay() async {
     _controller.reset();
     Future _calculation = Future.delayed(
       Duration(milliseconds: beginAnimation),
-          () =>    animate()
-      ,
+      () => animate(),
     );
   }
 
+  /**
+   *animate() async {
+      _assetsAudioPlayer.play().then((value) => _controller.forward());
+      }
+   */
+
   animate() async{
-    assetsAudioPlayer.play().then((value) => _controller.forward());
+    _assetsAudioPlayer.open(Audio("assets/suck.wav"));
+     await _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant GameCardItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // maybe I shouldn't have to do that
+    if (oldWidget.cardImage != widget.cardImage) {
+      setState(() {
+        delay();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    // I shouldn't have to do that
-    if(_cardImage != widget.cardImage){
-      setState(() { _cardImage = widget.cardImage;});
-    }
-
     return SlideTransition(
       position: _offsetAnimation,
       child: Card(
-        shape: BeveledRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
         elevation: 5,
-        child: _cardImage,
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(4.0), child: widget.cardImage),
       ),
     );
   }
-
 }

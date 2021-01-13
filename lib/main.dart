@@ -46,6 +46,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int score = 0;
+
   Map<String, bool> values = {
     Flags.STREET_LEFT: true,
     Flags.STREET_RIGHT: false,
@@ -54,34 +56,37 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: new ListView(
-        children: values.keys.map((String key) {
-          return new CheckboxListTile(
-            title: new Text(key),
-            value: values[key],
-            onChanged: (bool value) {
-              setState(() {
-                if(key == Flags.STREET_LEFT){
-                  values[Flags.STREET_LEFT] = true;
-                  values[Flags.STREET_RIGHT] = false;
-                }else if (key == Flags.STREET_RIGHT){
-                  values[Flags.STREET_LEFT] = false;
-                  values[Flags.STREET_RIGHT] = true;
-                }
-              });
-            },
-          );
-        }).toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _startGame,
-        tooltip: 'Increment',
-        child: Icon(Icons.play_arrow),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+            child: Padding(
+          padding:
+              EdgeInsets.only(bottom: 10.5, left: 10, right: 10, top: 15.0),
+          child: ListView(
+            children: values.keys.map((String key) {
+              return CheckboxListTile(
+                title: Text(key),
+                value: values[key],
+                onChanged: (bool value) {
+                  setState(() {
+                    if (key == Flags.STREET_LEFT) {
+                      values[Flags.STREET_LEFT] = true;
+                      values[Flags.STREET_RIGHT] = false;
+                    } else if (key == Flags.STREET_RIGHT) {
+                      values[Flags.STREET_LEFT] = false;
+                      values[Flags.STREET_RIGHT] = true;
+                    }
+                  });
+                },
+              );
+            }).toList(),
+          ),
+        )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _startGame,
+          child: Icon(Icons.play_arrow),
+        ));
   }
 
   void _startGame() {
@@ -90,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
       (values[Flags.STREET_LEFT])
           ? flag = Flags.STREET_LEFT
           : flag = Flags.STREET_RIGHT;
-      return Game(flag);
+      return Game(flag, score);
     }));
   }
 }

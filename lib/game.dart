@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:math';
@@ -7,14 +6,16 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanal_memory/cardSelector.dart';
+import 'package:hauptkanal_memory/countdown.dart';
 import "package:intl/intl.dart";
 
 import 'flags.dart';
 
 class Game extends StatefulWidget {
   final String currentStreet;
+  int score;
 
-  Game(this.currentStreet);
+  Game(this.currentStreet, this.score);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,39 +28,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   List<FileSystemEntity> imageNames;
   List randomImages;
   int currentNumber = 0;
-  int score = 0;
   int lastRandomNumber;
   List<Image> _nextRandomImages;
-  Timer _timer;
-  int _start = Flags.COUNTDOWN_IN_SECONDS;
-
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            try {
-              timer.cancel();
-            } finally {
-              Navigator.pop(context);
-            }
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
 
   Image getImage(int pHouseNumber) {
     var myFormat = new NumberFormat();
@@ -73,11 +43,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     return Image.asset(path);
   }
 
-  String _printDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$twoDigitMinutes:$twoDigitSeconds";
+  close(){
+    Navigator.pop(context);
   }
 
   List<FileSystemEntity> _getImageNames() {
@@ -114,12 +81,10 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   playFlickAudio() async {
     assetsAudioPlayer.open(Audio("assets/flick.wav"));
-    assetsAudioPlayer.play();
   }
 
   playWrongAudio() async {
     assetsAudioPlayer.open(Audio("assets/bad.mp3"));
-    assetsAudioPlayer.play();
   }
 
   _cardTapped(int pSelectedIndex) {
@@ -143,14 +108,14 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         preCacheNextImage();
         setState(() {
           _nextRandomImages.clear();
-          score++;
+          widget.score++;
           currentNumber++;
         });
       } else {
         playWrongAudio();
-        score--;
+        widget.score--;
       }
-      developer.log('Current score: ' + score.toString());
+      developer.log('Current score: ' + widget.score.toString());
     }
   }
 
@@ -168,10 +133,6 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (_timer == null || !_timer.isActive) {
-      startTimer();
-    }
-
     return MaterialApp(
         title: 'Hauptkanal Memory',
         home: Scaffold(
@@ -186,15 +147,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                     fit: BoxFit.cover,
                   )),
               Center(
-                  child: Text(_printDuration(Duration(seconds: _start)),
-                      style: GoogleFonts.robotoCondensed(
-                          fontSize: 95,
-                          fontStyle: FontStyle.italic,
-                          textStyle: TextStyle(color: Colors.white54)))),
+                  child: Countdown(close)),
               Container(
                   alignment: Alignment.topRight,
                   padding: EdgeInsets.all(25.0),
-                  child: Text('Score ' + score.toString(),
+                  child: Text('Score ' + widget.score.toString(),
                       style: GoogleFonts.roboto(
                           fontSize: 25,
                           textStyle: TextStyle(color: Colors.white54)))),
