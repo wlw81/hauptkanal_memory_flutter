@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanal_memory/cardSelector.dart';
 import 'package:hauptkanal_memory/countdown.dart';
 import "package:intl/intl.dart";
+import 'package:hauptkanal_memory/app_localizations.dart';
 
 import 'flags.dart';
 
@@ -134,7 +135,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Hauptkanal Memory',
+        title: AppLocalizations.of(context).translate('app_name'),
         home: Scaffold(
           body: Stack(
             alignment: Alignment.bottomCenter,
@@ -151,7 +152,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
               Container(
                   alignment: Alignment.topRight,
                   padding: EdgeInsets.all(25.0),
-                  child: Text('Score ' + widget.score.toString(),
+                  child: Text(AppLocalizations.of(context).translate('score')+' ' + widget.score.toString(),
                       style: GoogleFonts.roboto(
                           fontSize: 25,
                           textStyle: TextStyle(color: Colors.white54)))),

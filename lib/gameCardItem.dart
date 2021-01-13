@@ -38,22 +38,17 @@ class _MyAppState extends State<GameCardItem>
       end: Offset.zero,
       begin: const Offset(0.0, 1.2),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
-    delay();
+    reset();
   }
 
-  delay() async {
+  Future reset() async {
     _controller.reset();
-    Future _calculation = Future.delayed(
+    return Future.delayed(
       Duration(milliseconds: beginAnimation),
       () => animate(),
     );
   }
 
-  /**
-   *animate() async {
-      _assetsAudioPlayer.play().then((value) => _controller.forward());
-      }
-   */
 
   animate() async{
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
@@ -66,7 +61,7 @@ class _MyAppState extends State<GameCardItem>
     // maybe I shouldn't have to do that
     if (oldWidget.cardImage != widget.cardImage) {
       setState(() {
-        delay();
+        reset();
       });
     }
   }
