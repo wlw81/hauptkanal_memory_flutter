@@ -21,7 +21,7 @@ class _MyAppState extends State<CardSelector> {
   @override
   Widget build(BuildContext context) {
 
-    return ListView.builder(
+    return Center(child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: Flags.RANDOM_CARD_COUNT,
@@ -34,7 +34,7 @@ class _MyAppState extends State<CardSelector> {
              },
             child: GameCardItem(widget._nextRandomImages.elementAt(index), index),
           );
-        });
+        }));
   }
 
 

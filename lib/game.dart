@@ -44,8 +44,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     return Image.asset(path);
   }
 
-  close(){
-    Navigator.pop(context);
+  close() {
+    setState(() {
+      developer.log('Final score '+widget.score.toString());
+      Navigator.pop(context);
+    });
   }
 
   List<FileSystemEntity> _getImageNames() {
@@ -147,23 +150,26 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                     _getImageNames().elementAt(currentNumber),
                     fit: BoxFit.cover,
                   )),
-              Center(
-                  child: Countdown(close)),
+              Center(child: Countdown(close)),
               Container(
                   alignment: Alignment.topRight,
                   padding: EdgeInsets.all(25.0),
-                  child: Text(AppLocalizations.of(context).translate('score')+' ' + widget.score.toString(),
+                  child: Text(
+                      AppLocalizations.of(context).translate('score') +
+                          ' ' +
+                          widget.score.toString(),
                       style: GoogleFonts.roboto(
                           fontSize: 25,
-                          textStyle: TextStyle(color: Colors.white54)))),
+                          textStyle: TextStyle(color: Colors.purple[200])))),
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 Expanded(
                     child: SizedBox(
                         height: 200,
                         child: Padding(
                             padding: EdgeInsets.only(
-                                bottom: 10.5, left: 2.5, right: 2.5, top: 15.0),
-                            child: CardSelector(_generateRandomCardImages(), _cardTapped)))),
+                                bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
+                            child: CardSelector(
+                                _generateRandomCardImages(), _cardTapped)))),
               ])
             ],
           ),
@@ -172,8 +178,14 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   void preCacheNextImage() async {
     try {
-       precacheImage(
-          Image.file(_getImageNames().elementAt(currentNumber)).image, context);
+      for (int i = 0; i < Flags.RANDOM_CARD_COUNT; i++) {
+        int renderNumber = currentNumber + i;
+        if (renderNumber < _getImageNames().length) {
+          precacheImage(
+              Image.file(_getImageNames().elementAt(renderNumber)).image,
+              context);
+        }
+      }
     } catch (Exception) {
       developer.log('Failed to pre cache: ' + Exception.toString());
     }

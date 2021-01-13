@@ -10,6 +10,7 @@ void main() => runApp(MyApp());
 final String appName = 'Hauptkanal Memory';
 
 class MyApp extends StatelessWidget {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int score = 0;
+
+  static int score = 0;
 
   Map<String, bool> values = {
     Flags.STREET_LEFT: true,
