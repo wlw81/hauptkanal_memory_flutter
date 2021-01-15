@@ -4,19 +4,18 @@ import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanal_memory/cardSelector.dart';
 import 'package:hauptkanal_memory/countdown.dart';
+import 'package:hauptkanal_memory/score.dart';
 import "package:intl/intl.dart";
-import 'package:hauptkanal_memory/app_localizations.dart';
 
 import 'flags.dart';
 
 class Game extends StatefulWidget {
   final String currentStreet;
-  int score;
+  final Function(int) onScoreChange;
 
-  Game(this.currentStreet, this.score);
+  Game(this.currentStreet, this.onScoreChange);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,6 +29,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   List randomImages;
   int currentNumber = 0;
   int lastRandomNumber;
+  int score = 0;
   List<Image> _nextRandomImages;
 
   Image getImage(int pHouseNumber) {
@@ -46,7 +46,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   close() {
     setState(() {
-      developer.log('Final score '+widget.score.toString());
+      dispose();
+      developer.log('Final score ' + score.toString());
       Navigator.pop(context);
     });
   }
@@ -72,7 +73,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     return imageNames;
   }
 
-  int _generateHousenumber() {
+  int _generateHouseNumber() {
     int houseNumberGenerated = currentNumber;
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
@@ -112,14 +113,15 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         preCacheNextImage();
         setState(() {
           _nextRandomImages.clear();
-          widget.score++;
+          score++;
           currentNumber++;
         });
       } else {
         playWrongAudio();
-        widget.score--;
+        score--;
       }
-      developer.log('Current score: ' + widget.score.toString());
+      widget.onScoreChange(score);
+      developer.log('Current score: ' + score.toString());
     }
   }
 
@@ -127,7 +129,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     if (_nextRandomImages == null || _nextRandomImages.isEmpty) {
       _nextRandomImages = new List();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
-        _nextRandomImages.add(getImage(_generateHousenumber()));
+        _nextRandomImages.add(getImage(_generateHouseNumber()));
       }
       _nextRandomImages.add(getImage(currentNumber + 1));
       _nextRandomImages.shuffle();
@@ -137,9 +139,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: AppLocalizations.of(context).translate('app_name'),
-        home: Scaffold(
+    return Scaffold(
           body: Stack(
             alignment: Alignment.bottomCenter,
             children: <Widget>[
@@ -151,16 +151,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                     fit: BoxFit.cover,
                   )),
               Center(child: Countdown(close)),
-              Container(
-                  alignment: Alignment.topRight,
-                  padding: EdgeInsets.all(25.0),
-                  child: Text(
-                      AppLocalizations.of(context).translate('score') +
-                          ' ' +
-                          widget.score.toString(),
-                      style: GoogleFonts.roboto(
-                          fontSize: 25,
-                          textStyle: TextStyle(color: Colors.purple[200])))),
+              Score(score),
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
                 Expanded(
                     child: SizedBox(
@@ -173,7 +164,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
               ])
             ],
           ),
-        ));
+        );
   }
 
   void preCacheNextImage() async {

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hauptkanal_memory/app_localizations.dart';
 import 'package:hauptkanal_memory/flags.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanal_memory/game.dart';
+import 'package:hauptkanal_memory/score.dart';
 
+import 'flags.dart';
 void main() => runApp(MyApp());
 
 final String appName = 'Hauptkanal Memory';
+
 
 class MyApp extends StatelessWidget {
 
@@ -53,9 +55,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  static int score = 0;
-
+  int lastScore = 0;
   Map<String, bool> values = {
     Flags.STREET_LEFT: true,
     Flags.STREET_RIGHT: false,
@@ -70,11 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(children: <Widget>[
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 20),
-              child: Text(AppLocalizations.of(context).translate('score') +
-                  ' ' +
-                  score.toString(), style: GoogleFonts.roboto(
-                  fontSize: 25,
-                  textStyle: TextStyle(color: Colors.purple)))),
+              child: Score(lastScore)),
           Expanded(
             child: ListView(
               padding:
@@ -104,6 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Icon(Icons.play_arrow),
         ));
   }
+  
+  onScoreChange(int pValue){
+   setState(() {
+     lastScore = pValue;
+   });
+  }
 
   void _startGame() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -111,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       (values[Flags.STREET_LEFT])
           ? flag = Flags.STREET_LEFT
           : flag = Flags.STREET_RIGHT;
-      return Game(flag, score);
+      return Game(flag, onScoreChange);
     }));
   }
 }

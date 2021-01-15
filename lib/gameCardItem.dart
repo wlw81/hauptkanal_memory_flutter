@@ -23,6 +23,12 @@ class _MyAppState extends State<GameCardItem>
   final _assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 

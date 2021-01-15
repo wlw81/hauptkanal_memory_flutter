@@ -1,6 +1,7 @@
 {
   "app_name": "Hauptkanal Memory",
   "score": "Punkte",
+  "lastScore": "Letzte Punktzahl",
   "hauptkanalLinks": "Hauptkanal Links",
   "hauptkanalRechts": "Hauptkanal Rechts"
 }
