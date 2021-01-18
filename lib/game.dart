@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:math';
@@ -31,6 +32,39 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   int lastRandomNumber;
   int score = 0;
   List<Image> _nextRandomImages;
+  int secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
+
+  Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_timer == null || !_timer.isActive) {
+      startTimer();
+    }
+  }
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (secondsRemaining == 0) {
+          setState(() {
+            try {
+              timer.cancel();
+            } finally {
+              close();
+            }
+          });
+        } else {
+          setState(() {
+            secondsRemaining--;
+          });
+        }
+      },
+    );
+  }
+
 
   Image getImage(int pHouseNumber) {
     var myFormat = new NumberFormat();
@@ -111,14 +145,18 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       if (selectedFilename.contains(correctFilename)) {
         playFlickAudio();
         preCacheNextImage();
+
         setState(() {
           _nextRandomImages.clear();
-          score++;
+          int additionalScore = 10 * secondsRemaining;
+          score+= additionalScore;
           currentNumber++;
         });
       } else {
         playWrongAudio();
-        score--;
+        setState(() {
+          score-= 500;
+        });
       }
       widget.onScoreChange(score);
       developer.log('Current score: ' + score.toString());
@@ -139,32 +177,33 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-          body: Stack(
-            alignment: Alignment.bottomCenter,
-            children: <Widget>[
-              Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  child: Image.file(
-                    _getImageNames().elementAt(currentNumber),
-                    fit: BoxFit.cover,
-                  )),
-              Center(child: Countdown(close)),
-              Score(score),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                Expanded(
-                    child: SizedBox(
-                        height: 200,
-                        child: Padding(
-                            padding: EdgeInsets.only(
-                                bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
-                            child: CardSelector(
-                                _generateRandomCardImages(), _cardTapped)))),
-              ])
-            ],
-          ),
-        );
+    return  Scaffold(
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            Container(
+                height: double.infinity,
+                width: double.infinity,
+                child: Image.file(
+                  _getImageNames().elementAt(currentNumber),
+                  fit: BoxFit.cover,
+                )),
+            Center(child: Countdown(secondsRemaining)),
+            Score(score, true),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+              Expanded(
+                  child: SizedBox(
+                      height: 200,
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
+                          child: CardSelector(
+                              _generateRandomCardImages(), _cardTapped)))),
+            ])
+          ],
+        ),
+      )
+    ;
   }
 
   void preCacheNextImage() async {

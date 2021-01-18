@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(children: <Widget>[
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 20),
-              child: Score(lastScore)),
+              child: Score(lastScore, false)),
           Expanded(
             child: ListView(
               padding:
