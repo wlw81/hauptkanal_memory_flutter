@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: ListView(
               padding:
-                  EdgeInsets.only(bottom: 10.5, left: 10, right: 10, top: 15.0),
+                  EdgeInsets.only(bottom: 10.5, left: 15, right: 15, top: 15.0),
               children: values.keys.map((String key) {
                 return CheckboxListTile(
                   title: Text(AppLocalizations.of(context).translate(key)),

@@ -29,8 +29,6 @@ class _MyAppState extends State<CardSelector> {
            return GestureDetector(
              onTap: () {
                widget.onTapped(index);
-               setState(() {
-               });
              },
             child: GameCardItem(widget._nextRandomImages.elementAt(index), index),
           );

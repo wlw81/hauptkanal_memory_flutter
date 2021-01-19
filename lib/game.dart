@@ -34,6 +34,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   List<Image> _nextRandomImages;
   int secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
 
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
+
   Timer _timer;
 
   @override
@@ -42,18 +45,39 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     if (_timer == null || !_timer.isActive) {
       startTimer();
     }
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0.0, 0.01),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   }
+
+  @override
+  void dispose() {
+    try {
+      _timer.cancel();
+      _controller.dispose();
+    } finally {
+      super.dispose();
+    }
+  }
+
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-          (Timer timer) {
+      (Timer timer) {
         if (secondsRemaining == 0) {
           setState(() {
             try {
               timer.cancel();
             } finally {
-              close();
+              close(); // out of time
             }
           });
         } else {
@@ -64,7 +88,6 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       },
     );
   }
-
 
   Image getImage(int pHouseNumber) {
     var myFormat = new NumberFormat();
@@ -79,11 +102,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   close() {
-    setState(() {
-      dispose();
-      developer.log('Final score ' + score.toString());
-      Navigator.pop(context);
-    });
+    dispose();
+    developer.log('Final score ' + score.toString());
+    Navigator.pop(context);
   }
 
   List<FileSystemEntity> _getImageNames() {
@@ -129,6 +150,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   _cardTapped(int pSelectedIndex) {
     developer.log('Confirmed card tapped: ' + pSelectedIndex.toString());
     if (pSelectedIndex > -1 && _nextRandomImages.isNotEmpty) {
+      _controller.forward(from: 0.0);
       String selectedFilename =
           _nextRandomImages.elementAt(pSelectedIndex).toString();
       String correctFilename = getImage(currentNumber + 1).toString();
@@ -149,13 +171,17 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         setState(() {
           _nextRandomImages.clear();
           int additionalScore = 10 * secondsRemaining;
-          score+= additionalScore;
+          score += additionalScore;
           currentNumber++;
         });
+
+        if (currentNumber >= (_getImageNames().length - 2)) {
+          close(); // game completed!
+        }
       } else {
         playWrongAudio();
         setState(() {
-          score-= 500;
+          score -= 500;
         });
       }
       widget.onScoreChange(score);
@@ -177,33 +203,33 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: Image.file(
-                  _getImageNames().elementAt(currentNumber),
-                  fit: BoxFit.cover,
-                )),
-            Center(child: Countdown(secondsRemaining)),
-            Score(score, true),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              Expanded(
-                  child: SizedBox(
-                      height: 200,
-                      child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
-                          child: CardSelector(
-                              _generateRandomCardImages(), _cardTapped)))),
-            ])
-          ],
-        ),
-      )
-    ;
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Image.file(
+                _getImageNames().elementAt(currentNumber),
+                fit: BoxFit.cover,
+              )),
+          Center(child: Countdown(secondsRemaining)),
+          SlideTransition(
+              position: _offsetAnimation, child: Score(score, true)),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Expanded(
+                child: SizedBox(
+                    height: 200,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
+                        child: CardSelector(
+                            _generateRandomCardImages(), _cardTapped)))),
+          ])
+        ],
+      ),
+    );
   }
 
   void preCacheNextImage() async {
