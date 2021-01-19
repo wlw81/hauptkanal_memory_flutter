@@ -60,6 +60,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   @override
   void dispose() {
     try {
+      developer.log('Final score ' + score.toString());
       _timer.cancel();
       _controller.dispose();
     } finally {
@@ -102,8 +103,6 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   close() {
-    dispose();
-    developer.log('Final score ' + score.toString());
     Navigator.pop(context);
   }
 

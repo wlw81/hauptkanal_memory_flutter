@@ -4,8 +4,8 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 
 class GameCardItem extends StatefulWidget {
-  Image cardImage;
-  int animationOrder;
+  final Image cardImage;
+  final int animationOrder;
 
   GameCardItem(this.cardImage, this.animationOrder);
 
