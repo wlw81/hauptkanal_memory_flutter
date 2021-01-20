@@ -9,14 +9,16 @@ import 'package:hauptkanal_memory/cardSelector.dart';
 import 'package:hauptkanal_memory/countdown.dart';
 import 'package:hauptkanal_memory/score.dart';
 import "package:intl/intl.dart";
+import 'package:path_provider/path_provider.dart';
 
 import 'flags.dart';
 
 class Game extends StatefulWidget {
   final String currentStreet;
   final Function(int) onScoreChange;
+  final List<String> streetImageNames;
 
-  Game(this.currentStreet, this.onScoreChange);
+  Game(this.currentStreet, this.onScoreChange, this.streetImageNames);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,6 +44,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     if (_timer == null || !_timer.isActive) {
       startTimer();
     }
@@ -106,33 +109,12 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     Navigator.pop(context);
   }
 
-  List<FileSystemEntity> _getImageNames() {
-    if (imageNames == null || imageNames.isEmpty) {
-      imageNames = List<FileSystemEntity>();
-      var systemTempDir = Directory.systemTemp;
-
-      // List directory contents, recursing into sub-directories,
-      // but not following symbolic links.
-      systemTempDir.listSync(recursive: true, followLinks: false).forEach(
-          (element) => (element.path.contains(widget.currentStreet) &&
-                  element.path.contains('jpg'))
-              ? imageNames.add(element)
-              : developer.log('not my beer -> ' + element.toString()));
-
-      imageNames.sort((a, b) => a.toString().compareTo(b.toString()));
-      imageNames.forEach((element) =>
-          developer.log('Added to image list: ' + element.path.toString()));
-      developer.log('Current image count: ' + imageNames.length.toString());
-    }
-    return imageNames;
-  }
-
   int _generateHouseNumber() {
     int houseNumberGenerated = currentNumber;
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
         houseNumberGenerated == lastRandomNumber) {
-      houseNumberGenerated = Random.secure().nextInt(_getImageNames().length);
+      houseNumberGenerated = Random.secure().nextInt(widget.streetImageNames.length);
     }
     lastRandomNumber = houseNumberGenerated;
     return houseNumberGenerated;
@@ -174,7 +156,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           currentNumber++;
         });
 
-        if (currentNumber >= (_getImageNames().length - 2)) {
+        if (currentNumber >= (widget.streetImageNames.length - 2)) {
           close(); // game completed!
         }
       } else {
@@ -209,10 +191,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           Container(
               height: double.infinity,
               width: double.infinity,
-              child: Image.file(
-                _getImageNames().elementAt(currentNumber),
-                fit: BoxFit.cover,
-              )),
+              child:
+              Image.asset(widget.streetImageNames.elementAt(currentNumber), fit: BoxFit.cover),
+              ),
           Center(child: Countdown(secondsRemaining)),
           SlideTransition(
               position: _offsetAnimation, child: Score(score, true)),
@@ -235,9 +216,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     try {
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT; i++) {
         int renderNumber = currentNumber + i;
-        if (renderNumber < _getImageNames().length) {
+        if (renderNumber < widget.streetImageNames.length) {
           precacheImage(
-              Image.file(_getImageNames().elementAt(renderNumber)).image,
+              Image.asset(widget.streetImageNames.elementAt(currentNumber)).image,
               context);
         }
       }
