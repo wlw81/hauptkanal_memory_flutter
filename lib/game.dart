@@ -218,7 +218,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         int renderNumber = currentNumber + i;
         if (renderNumber < widget.streetImageNames.length) {
           precacheImage(
-              Image.asset(widget.streetImageNames.elementAt(currentNumber)).image,
+              Image.asset(widget.streetImageNames.elementAt(renderNumber)).image,
               context);
         }
       }
