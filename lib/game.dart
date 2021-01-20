@@ -33,7 +33,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   int currentNumber = 0;
   int lastRandomNumber;
   int score = 0;
-  List<Image> _nextRandomImages;
+  Map<int, Image> _nextRandomImages;
   int secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
 
   AnimationController _controller;
@@ -93,18 +93,6 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     );
   }
 
-  Image getImage(int pHouseNumber) {
-    var myFormat = new NumberFormat();
-    myFormat.minimumIntegerDigits = 3;
-    var path = 'assets/' +
-        widget.currentStreet +
-        '/image' +
-        myFormat.format(pHouseNumber) +
-        '.jpg';
-
-    return Image.asset(path);
-  }
-
   close() {
     Navigator.pop(context);
   }
@@ -132,20 +120,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     developer.log('Confirmed card tapped: ' + pSelectedIndex.toString());
     if (pSelectedIndex > -1 && _nextRandomImages.isNotEmpty) {
       _controller.forward(from: 0.0);
-      String selectedFilename =
-          _nextRandomImages.elementAt(pSelectedIndex).toString();
-      String correctFilename = getImage(currentNumber + 1).toString();
-      correctFilename =
-          correctFilename.substring(correctFilename.lastIndexOf('/'));
-      correctFilename =
-          correctFilename.substring(0, correctFilename.indexOf('jpg'));
 
-      developer.log('Selected image: ' +
-          selectedFilename +
-          ', correct image: ' +
-          correctFilename);
-
-      if (selectedFilename.contains(correctFilename)) {
+      if (_nextRandomImages.keys.elementAt(pSelectedIndex) == (currentNumber +1)) {
         playFlickAudio();
         preCacheNextImage();
 
@@ -170,14 +146,16 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     }
   }
 
-  List<Image> _generateRandomCardImages() {
+  Map<int, Image> _generateRandomCardImages() {
     if (_nextRandomImages == null || _nextRandomImages.isEmpty) {
-      _nextRandomImages = new List();
+      _nextRandomImages = new Map<int, Image>();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
-        _nextRandomImages.add(getImage(_generateHouseNumber()));
+
+        int number = _generateHouseNumber();
+        _nextRandomImages.update(number, (value) => Image.asset(widget.streetImageNames.elementAt(number)));
       }
-      _nextRandomImages.add(getImage(currentNumber + 1));
-      _nextRandomImages.shuffle();
+      _nextRandomImages.update(currentNumber+1, (value) => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
+     // _nextRandomImages.shuffle();
     }
     return _nextRandomImages;
   }
@@ -205,7 +183,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(
                             bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
                         child: CardSelector(
-                            _generateRandomCardImages(), _cardTapped)))),
+                            _generateRandomCardImages().values, _cardTapped)))),
           ])
         ],
       ),
