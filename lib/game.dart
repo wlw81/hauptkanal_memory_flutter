@@ -121,6 +121,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     if (pSelectedIndex > -1 && _nextRandomImages.isNotEmpty) {
       _controller.forward(from: 0.0);
 
+      // check tomorrow is this really works
       if (_nextRandomImages.keys.elementAt(pSelectedIndex) == (currentNumber +1)) {
         playFlickAudio();
         preCacheNextImage();
