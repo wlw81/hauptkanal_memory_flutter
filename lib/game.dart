@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:hauptkanal_memory/cardSelector.dart';
 import 'package:hauptkanal_memory/countdown.dart';
@@ -146,14 +147,14 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
 
   Map<int, Image> _generateRandomCardImages() {
     if (_nextRandomImages == null || _nextRandomImages.isEmpty) {
-      _nextRandomImages = new Map<int, Image>();
+      // putting into hashmap, to achieve random order
+      HashMap newRandomImagesUnsorted = new HashMap<int, Image>();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
-
         int number = _generateHouseNumber();
-        _nextRandomImages.putIfAbsent(number, () => Image.asset(widget.streetImageNames.elementAt(number)));
+        newRandomImagesUnsorted.putIfAbsent(number, () => Image.asset(widget.streetImageNames.elementAt(number)));
       }
-      _nextRandomImages.putIfAbsent(currentNumber+1, () => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
-     // _nextRandomImages.shuffle();
+      newRandomImagesUnsorted.putIfAbsent(currentNumber+1, () => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
+      _nextRandomImages = Map.from(newRandomImagesUnsorted);
     }
     return _nextRandomImages;
   }
