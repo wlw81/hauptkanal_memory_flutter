@@ -25,7 +25,7 @@ class Score extends StatelessWidget {
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       textStyle: TextStyle(
-                          backgroundColor: Colors.purple,
+                          backgroundColor: Theme.of(context).primaryColor,
                           color: Colors.white)))));
     }else{
       return Container(

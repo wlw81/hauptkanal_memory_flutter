@@ -1,16 +1,14 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:hauptkanal_memory/cardSelector.dart';
 import 'package:hauptkanal_memory/countdown.dart';
 import 'package:hauptkanal_memory/score.dart';
-import "package:intl/intl.dart";
-import 'package:path_provider/path_provider.dart';
 
 import 'flags.dart';
 
@@ -177,7 +175,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Expanded(
                 child: SizedBox(
-                    height: 200,
+                    height: (MediaQuery.of(context).size.height / 3.2),
                     child: Padding(
                         padding: EdgeInsets.only(
                             bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),

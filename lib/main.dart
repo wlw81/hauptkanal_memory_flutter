@@ -7,8 +7,7 @@ import 'package:hauptkanal_memory/app_localizations.dart';
 import 'package:hauptkanal_memory/flags.dart';
 import 'package:hauptkanal_memory/game.dart';
 import 'package:hauptkanal_memory/score.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'flags.dart';
 
@@ -45,8 +44,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
+          primarySwatch: Colors.purple,
+          secondaryHeaderColor: Colors.purple[100],
+          accentColor: Colors.orangeAccent),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).secondaryHeaderColor,
         appBar: AppBar(
           title: Text(widget.title),
         ),
@@ -97,12 +98,24 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 20),
               child: Score(lastScore, false)),
+          Padding(
+              padding: EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
+              child:
+                  Text(AppLocalizations.of(context).translate('introduction'),
+                      style: GoogleFonts.roboto(
+                          //fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          textStyle: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          )))),
           Expanded(
             child: ListView(
+              shrinkWrap: true,
               padding:
                   EdgeInsets.only(bottom: 10.5, left: 15, right: 15, top: 15.0),
               children: values.keys.map((String key) {
                 return CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   title: Text(AppLocalizations.of(context).translate(key)),
                   value: values[key],
                   onChanged: (bool value) {
@@ -140,7 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
         : flag = Flags.STREET_RIGHT;
 
     // >> To get paths you need these 2 lines
-    final manifestContent = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+    final manifestContent =
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
 
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
     // >> To get paths you need these 2 lines
@@ -151,7 +165,6 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-
       developer.log('Selected street ' + flag);
       return Game(flag, onScoreChange, imagePaths);
     }));
