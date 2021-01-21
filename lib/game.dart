@@ -29,16 +29,13 @@ class Game extends StatefulWidget {
 class _MyAppState extends State<Game> with TickerProviderStateMixin {
   final assetsAudioPlayer = AssetsAudioPlayer();
   List<FileSystemEntity> imageNames;
-  List randomImages;
   int currentNumber = 0;
   int lastRandomNumber;
   int score = 0;
   Map<int, Image> _nextRandomImages;
   int secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
-
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
-
   Timer _timer;
 
   @override
@@ -153,9 +150,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
 
         int number = _generateHouseNumber();
-        _nextRandomImages.update(number, (value) => Image.asset(widget.streetImageNames.elementAt(number)));
+        _nextRandomImages.putIfAbsent(number, () => Image.asset(widget.streetImageNames.elementAt(number)));
       }
-      _nextRandomImages.update(currentNumber+1, (value) => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
+      _nextRandomImages.putIfAbsent(currentNumber+1, () => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
      // _nextRandomImages.shuffle();
     }
     return _nextRandomImages;
@@ -184,7 +181,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(
                             bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
                         child: CardSelector(
-                            _generateRandomCardImages().values, _cardTapped)))),
+                            _generateRandomCardImages().values.toList(), _cardTapped)))),
           ])
         ],
       ),
