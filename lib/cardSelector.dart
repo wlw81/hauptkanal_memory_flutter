@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hauptkanal_memory/gameCardItem.dart';
+import 'package:hauptkanalmemory/gameCardItem.dart';
 
 import 'flags.dart';
 

@@ -3,11 +3,12 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hauptkanal_memory/app_localizations.dart';
-import 'package:hauptkanal_memory/flags.dart';
-import 'package:hauptkanal_memory/game.dart';
-import 'package:hauptkanal_memory/score.dart';
+import 'package:hauptkanalmemory/app_localizations.dart';
+import 'package:hauptkanalmemory/flags.dart';
+import 'package:hauptkanalmemory/game.dart';
+import 'package:hauptkanalmemory/scoreDisplay.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:games_services/games_services.dart';
 
 import 'flags.dart';
 
@@ -82,10 +83,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int lastScore = 0;
+  String _platformVersion = 'Unknown';
   Map<String, bool> values = {
     Flags.STREET_LEFT: true,
     Flags.STREET_RIGHT: false,
   };
+
+  @override
+  void initState() {
+    super.initState();
+    welcome();
+  }
+
+  welcome() async {
+    await GamesServices.signIn();
+    GamesServices.unlock(
+        achievement:
+            Achievement(androidID: Flags.ACHV_WELCOME, percentComplete: 100));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(children: <Widget>[
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 20),
-              child: Score(lastScore, false)),
+              child: ScoreDisplay(lastScore, false)),
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
               child:
@@ -140,10 +155,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  onScoreChange(int pValue) {
-    setState(() {
-      lastScore = pValue;
-    });
+  onScoreChange(int pValue, bool pFinal) {
+    if (pFinal) {
+      setState(() {
+        lastScore = pValue;
+      });
+    } else {
+      String leaderbordID = 'error';
+      (values[Flags.STREET_LEFT])
+          ? leaderbordID = Flags.LEADERBORD_LEFT
+          : leaderbordID = Flags.LEADERBORD_RIGHT;
+
+      GamesServices.submitScore(
+          score: Score(
+              androidLeaderboardID: leaderbordID,
+              value: pValue));
+    }
   }
 
   _startGame() async {

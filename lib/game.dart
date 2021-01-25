@@ -6,15 +6,15 @@ import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:hauptkanal_memory/cardSelector.dart';
-import 'package:hauptkanal_memory/countdown.dart';
-import 'package:hauptkanal_memory/score.dart';
+import 'package:hauptkanalmemory/cardSelector.dart';
+import 'package:hauptkanalmemory/countdown.dart';
+import 'package:hauptkanalmemory/scoreDisplay.dart';
 
 import 'flags.dart';
 
 class Game extends StatefulWidget {
   final String currentStreet;
-  final Function(int) onScoreChange;
+  final Function(int, bool) onScoreChange;
   final List<String> streetImageNames;
 
   Game(this.currentStreet, this.onScoreChange, this.streetImageNames);
@@ -90,6 +90,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   close() {
+    widget.onScoreChange(score, true);
     Navigator.pop(context);
   }
 
@@ -138,7 +139,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           score -= 500;
         });
       }
-      widget.onScoreChange(score);
+      widget.onScoreChange(score, false);
       developer.log('Current score: ' + score.toString());
     }
   }
@@ -171,7 +172,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
               ),
           Center(child: Countdown(secondsRemaining)),
           SlideTransition(
-              position: _offsetAnimation, child: Score(score, true)),
+              position: _offsetAnimation, child: ScoreDisplay(score, true)),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Expanded(
                 child: SizedBox(

@@ -1,14 +1,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hauptkanal_memory/app_localizations.dart';
+import 'package:hauptkanalmemory/app_localizations.dart';
+import "package:intl/intl.dart";
 
-class Score extends StatelessWidget {
+class ScoreDisplay extends StatelessWidget {
 
   final bool currentGame;
   final int _value;
 
-  Score(this._value, this.currentGame);
+  ScoreDisplay(this._value, this.currentGame);
+
+  NumberFormat _format = NumberFormat('###,###,000', 'de_DE');
+
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,7 @@ class Score extends StatelessWidget {
               borderRadius: BorderRadius.circular(4.0),
               child: Text(
                   AppLocalizations.of(context).translate('score') +
-                      ' ' + _value.toString(),
+                      ' ' + _format.format(_value),
                   style: GoogleFonts.roboto(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -35,7 +39,7 @@ class Score extends StatelessWidget {
               borderRadius: BorderRadius.circular(4.0),
               child: Text(
                   AppLocalizations.of(context).translate('lastScore') +
-                      ' ' + _value.toString(),
+                      ' ' + _format.format(_value),
                   style: GoogleFonts.roboto(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
