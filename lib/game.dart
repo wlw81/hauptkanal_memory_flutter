@@ -176,7 +176,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Expanded(
                 child: SizedBox(
-                    height: (MediaQuery.of(context).size.height / 3.2),
+                    height: 200,
                     child: Padding(
                         padding: EdgeInsets.only(
                             bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),

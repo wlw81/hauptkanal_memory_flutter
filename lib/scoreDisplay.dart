@@ -25,7 +25,7 @@ class ScoreDisplay extends StatelessWidget {
               child: Text(
                   AppLocalizations.of(context).translate('score') +
                       ' ' + _format.format(_value),
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.robotoCondensed(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       textStyle: TextStyle(
@@ -40,7 +40,7 @@ class ScoreDisplay extends StatelessWidget {
               child: Text(
                   AppLocalizations.of(context).translate('lastScore') +
                       ' ' + _format.format(_value),
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.robotoCondensed(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       textStyle: TextStyle(

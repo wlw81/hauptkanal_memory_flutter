@@ -77,7 +77,7 @@ class _MyAppState extends State<GameCardItem>
     return SlideTransition(
       position: _offsetAnimation,
       child: Card(
-        elevation: 5,
+        elevation: 4,
         child: ClipRRect(
             borderRadius: BorderRadius.circular(4.0), child: widget.cardImage),
       ),

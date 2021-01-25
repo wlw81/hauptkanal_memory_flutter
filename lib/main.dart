@@ -47,6 +47,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.purple,
           secondaryHeaderColor: Colors.purple[100],
+          fontFamily: 'Roboto',
+          textTheme: TextTheme(
+            bodyText1: TextStyle(color: Colors.purple)),
           accentColor: Colors.orangeAccent),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
@@ -102,6 +105,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Achievement(androidID: Flags.ACHV_WELCOME, percentComplete: 100));
   }
 
+  firstRun() async {
+    return GamesServices.unlock(
+        achievement:
+            Achievement(androidID: Flags.ACHV_FIRSTRUN, percentComplete: 100));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,11 +127,20 @@ class _MyHomePageState extends State<MyHomePage> {
               child:
                   Text(AppLocalizations.of(context).translate('introduction'),
                       style: GoogleFonts.roboto(
-                          //fontSize: 25,
                           fontWeight: FontWeight.bold,
                           textStyle: TextStyle(
                             color: Theme.of(context).primaryColor,
                           )))),
+
+          Padding(
+              padding: EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
+              child:
+              Text(AppLocalizations.of(context).translate('legal'),
+                  style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.bold,
+                      textStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      )))),
           Expanded(
             child: ListView(
               shrinkWrap: true,
@@ -131,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: values.keys.map((String key) {
                 return CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(AppLocalizations.of(context).translate(key)),
+                  title: Text(AppLocalizations.of(context).translate(key),   style: Theme.of(context).textTheme.bodyText1),
                   value: values[key],
                   onChanged: (bool value) {
                     setState(() {
@@ -148,6 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
               }).toList(),
             ),
           ),
+
+
+
+
         ]),
         floatingActionButton: FloatingActionButton(
           onPressed: _startGame,
@@ -155,21 +177,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  onScoreChange(int pValue, bool pFinal) {
-    if (pFinal) {
+  onScoreChange(int pValue, bool pFinal) async{
+    if (!pFinal) {
       setState(() {
         lastScore = pValue;
       });
     } else {
-      String leaderbordID = 'error';
+      await firstRun();
+      String leaderBoardID = 'error';
       (values[Flags.STREET_LEFT])
-          ? leaderbordID = Flags.LEADERBORD_LEFT
-          : leaderbordID = Flags.LEADERBORD_RIGHT;
+          ? leaderBoardID = Flags.LEADERBORD_LEFT
+          : leaderBoardID = Flags.LEADERBORD_RIGHT;
 
-      GamesServices.submitScore(
+      await GamesServices.submitScore(
           score: Score(
-              androidLeaderboardID: leaderbordID,
+              androidLeaderboardID: leaderBoardID,
               value: pValue));
+
+      GamesServices.showLeaderboards();
     }
   }
 

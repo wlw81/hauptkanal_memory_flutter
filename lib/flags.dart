@@ -4,6 +4,7 @@ class Flags {
   static const STREET_RIGHT = "hauptkanalRechts";
   static const STREET_LEFT = "hauptkanalLinks";
   static const ACHV_WELCOME = "CgkIwu3zjrEQEAIQAQ";
+  static const ACHV_FIRSTRUN = "CgkIwu3zjrEQEAIQBQ";
   static const LEADERBORD_LEFT = "CgkIwu3zjrEQEAIQAw";
   static const LEADERBORD_RIGHT = "CgkIwu3zjrEQEAIQBA";
   static const STREET = "SEITE";
