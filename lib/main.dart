@@ -9,6 +9,7 @@ import 'package:hauptkanalmemory/game.dart';
 import 'package:hauptkanalmemory/scoreDisplay.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:games_services/games_services.dart';
+import 'package:hauptkanalmemory/welcomeFlip.dart';
 
 import 'flags.dart';
 
@@ -122,30 +123,15 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 8, right: 8, top: 20),
               child: ScoreDisplay(lastScore, false)),
+          ElevatedButton(onPressed: ()  => GamesServices.showLeaderboards() , child: Text(AppLocalizations.of(context).translate('scoreboard'))),
           Padding(
               padding: EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
               child:
-                  Text(AppLocalizations.of(context).translate('introduction'),
-                      style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.bold,
-                          textStyle: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          )))),
-
-          Padding(
-              padding: EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
-              child:
-              Text(AppLocalizations.of(context).translate('legal'),
-                  style: GoogleFonts.roboto(
-                      fontWeight: FontWeight.bold,
-                      textStyle: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      )))),
-          Expanded(
-            child: ListView(
+              WelcomeFlip()),
+            ListView(
               shrinkWrap: true,
               padding:
-                  EdgeInsets.only(bottom: 10.5, left: 15, right: 15, top: 15.0),
+              EdgeInsets.only(bottom: 10.5, left: 15, right: 15, top: 15.0),
               children: values.keys.map((String key) {
                 return CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
@@ -165,7 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }).toList(),
             ),
-          ),
 
 
 

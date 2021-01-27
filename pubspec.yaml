@@ -11,7 +11,7 @@ description: A game around the inner citiy of Papenburg.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.5.5+18
+version: 0.5.7+20
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -31,6 +31,8 @@ dependencies:
   assets_audio_player: ^2.0.13
   json_annotation: ^3.1.1
   games_services: ^1.0.0
+  flip_card: ^0.4.4
+  vibration: ^1.7.3
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +53,7 @@ flutter:
   assets:
     - assets/hauptkanalLinks/
     - assets/hauptkanalRechts/
+    - assets/pbglion.png
     - assets/flick.wav
     - assets/swoosh.wav
     - assets/suck.wav

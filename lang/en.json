@@ -4,6 +4,7 @@
   "lastScore": "Last score",
   "hauptkanalLinks": "Hauptkanal Left 2018",
   "hauptkanalRechts": "Hauptkanal Right 2018",
-  "introduction": "Can you reach the train station? Always tap on the next house and crack the high score!",
-  "legal": "Coding & design: Thomas Pasligh\nQA: klokodax\n\nAll displayed image copyright remains by its respective owners."
+  "introduction": "Can you reach the train station?\nTap on the next house and crack the high score!",
+  "legal": "Coding & design: Thomas Pasligh (QA: klokodax)\n\nAll displayed image copyright remains by its respective owners.",
+  "scoreboard": "Leaderboard"
 }

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hauptkanalmemory/cardSelector.dart';
 import 'package:hauptkanalmemory/countdown.dart';
 import 'package:hauptkanalmemory/scoreDisplay.dart';
+import 'package:vibration/vibration.dart';
 
 import 'flags.dart';
 
@@ -25,7 +26,7 @@ class Game extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<Game> with TickerProviderStateMixin {
+class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBindingObserver {
   final assetsAudioPlayer = AssetsAudioPlayer();
   List<FileSystemEntity> imageNames;
   int currentNumber = 0;
@@ -45,6 +46,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       startTimer();
     }
 
+    WidgetsBinding.instance.addObserver(this);
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -59,7 +62,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   @override
   void dispose() {
     try {
-      developer.log('Final score ' + score.toString());
+      WidgetsBinding.instance.removeObserver(this);
       _timer.cancel();
       _controller.dispose();
     } finally {
@@ -77,7 +80,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
             try {
               timer.cancel();
             } finally {
-              close(); // out of time
+              close(true); // out of time
             }
           });
         } else {
@@ -89,8 +92,13 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     );
   }
 
-  close() {
-    widget.onScoreChange(score, true);
+  close(bool submitScore) {
+    if(submitScore ){
+      developer.log('Final score ' + score.toString());
+      widget.onScoreChange(score, true);
+    }else{
+      widget.onScoreChange(0, false);
+    }
     Navigator.pop(context);
   }
 
@@ -99,7 +107,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
     while (houseNumberGenerated == currentNumber ||
         houseNumberGenerated == (currentNumber + 1) ||
         houseNumberGenerated == lastRandomNumber) {
-      houseNumberGenerated = Random.secure().nextInt(widget.streetImageNames.length);
+      houseNumberGenerated =
+          Random.secure().nextInt(widget.streetImageNames.length);
     }
     lastRandomNumber = houseNumberGenerated;
     return houseNumberGenerated;
@@ -110,7 +119,13 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
   }
 
   playWrongAudio() async {
-    assetsAudioPlayer.open(Audio("assets/bad.mp3"));
+    try {
+      if (await Vibration.hasVibrator()) {
+        Vibration.vibrate(duration: 200);
+      }
+    } finally {
+      assetsAudioPlayer.open(Audio("assets/bad.mp3"));
+    }
   }
 
   _cardTapped(int pSelectedIndex) {
@@ -119,7 +134,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       _controller.forward(from: 0.0);
 
       // check tomorrow is this really works
-      if (_nextRandomImages.keys.elementAt(pSelectedIndex) == (currentNumber +1)) {
+      if (_nextRandomImages.keys.elementAt(pSelectedIndex) ==
+          (currentNumber + 1)) {
         playFlickAudio();
         preCacheNextImage();
 
@@ -131,7 +147,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         });
 
         if (currentNumber >= (widget.streetImageNames.length - 2)) {
-          close(); // game completed!
+          close(true); // game completed!
         }
       } else {
         playWrongAudio();
@@ -150,9 +166,13 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
       HashMap newRandomImagesUnsorted = new HashMap<int, Image>();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
         int number = _generateHouseNumber();
-        newRandomImagesUnsorted.putIfAbsent(number, () => Image.asset(widget.streetImageNames.elementAt(number)));
+        newRandomImagesUnsorted.putIfAbsent(number,
+            () => Image.asset(widget.streetImageNames.elementAt(number)));
       }
-      newRandomImagesUnsorted.putIfAbsent(currentNumber+1, () => Image.asset(widget.streetImageNames.elementAt(currentNumber +1)));
+      newRandomImagesUnsorted.putIfAbsent(
+          currentNumber + 1,
+          () => Image.asset(
+              widget.streetImageNames.elementAt(currentNumber + 1)));
       _nextRandomImages = Map.from(newRandomImagesUnsorted);
     }
     return _nextRandomImages;
@@ -165,11 +185,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         alignment: Alignment.bottomCenter,
         children: <Widget>[
           Container(
-              height: double.infinity,
-              width: double.infinity,
-              child:
-              Image.asset(widget.streetImageNames.elementAt(currentNumber), fit: BoxFit.cover),
-              ),
+            height: double.infinity,
+            width: double.infinity,
+            child: Image.asset(widget.streetImageNames.elementAt(currentNumber),
+                fit: BoxFit.cover),
+          ),
           Center(child: Countdown(secondsRemaining)),
           SlideTransition(
               position: _offsetAnimation, child: ScoreDisplay(score, true)),
@@ -181,11 +201,19 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(
                             bottom: 20.5, left: 2.5, right: 2.5, top: 20.0),
                         child: CardSelector(
-                            _generateRandomCardImages().values.toList(), _cardTapped)))),
+                            _generateRandomCardImages().values.toList(),
+                            _cardTapped)))),
           ])
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.resumed ){
+     close(false);
+    }
   }
 
   void preCacheNextImage() async {
@@ -194,7 +222,8 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin {
         int renderNumber = currentNumber + i;
         if (renderNumber < widget.streetImageNames.length) {
           precacheImage(
-              Image.asset(widget.streetImageNames.elementAt(renderNumber)).image,
+              Image.asset(widget.streetImageNames.elementAt(renderNumber))
+                  .image,
               context);
         }
       }
