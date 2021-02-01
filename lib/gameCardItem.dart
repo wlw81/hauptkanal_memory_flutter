@@ -37,6 +37,11 @@ class _MyAppState extends State<GameCardItem>
     beginAnimation += (widget.animationOrder + 1) * 400;
     developer.log('begin animation ' + beginAnimation.toString());
 
+    _controllerHover = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
     _controllerSlide = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -60,12 +65,10 @@ class _MyAppState extends State<GameCardItem>
 
   animate() async {
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-    await _controllerSlide.forward().whenComplete(() =>     hover());
-
+    _controllerSlide.forward().whenComplete(() =>     hover());
   }
 
   hover(){
-    _controllerHover..repeat(reverse: true);
     _slideInAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0.0, 0.05),
