@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, WidgetsBindingObserver {
   int lastScore = 0;
-bool celebrated = false;
+  bool celebrated = false;
 
   AnimationController _controller;
   AnimationController _controllerScore;
@@ -303,6 +303,7 @@ bool celebrated = false;
 
   _startGame() async {
     assetsAudioPlayerMusic.pause();
+    celebrated = false;
     await assetsAudioPlayerEffects.open(Audio("assets/516824__mrthenoronha__get-item-4-8-bit.wav"));
     String flag = 'error';
     (values[Flags.STREET_LEFT])
