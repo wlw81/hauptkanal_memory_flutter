@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, WidgetsBindingObserver {
   int lastScore = 0;
+bool celebrated = false;
 
   AnimationController _controller;
   AnimationController _controllerScore;
@@ -268,7 +269,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
         lastScore = pValue;
       });
     } else {
-     playLevelFinishedMusic();
       await firstRun();
       String leaderBoardID = 'error';
       (values[Flags.STREET_LEFT])
@@ -285,7 +285,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.resumed ){
-      assetsAudioPlayerMusic.play();
+      if(lastScore >0 && !celebrated){
+        playLevelFinishedMusic();
+        celebrated = true;
+      }else{
+        assetsAudioPlayerMusic.play();
+      }
     }else if (state == AppLifecycleState.paused){
       assetsAudioPlayerMusic.pause();
     }
@@ -293,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
 
   playLevelFinishedMusic() async {
     assetsAudioPlayerMusic.stop();
-    await assetsAudioPlayerEffects.open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
+    assetsAudioPlayerEffects.open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
   }
 
   _startGame() async {
