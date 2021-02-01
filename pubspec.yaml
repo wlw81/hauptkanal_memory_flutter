@@ -11,10 +11,10 @@ description: A game around the inner citiy of Papenburg.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.5.7+20
+version: 0.5.9+22
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   intl: "^0.16.1"
@@ -33,6 +33,7 @@ dependencies:
   games_services: ^1.0.0
   flip_card: ^0.4.4
   vibration: ^1.7.3
+  wakelock: ^0.2.1+1
 
 dev_dependencies:
   flutter_test:
@@ -54,9 +55,14 @@ flutter:
     - assets/hauptkanalLinks/
     - assets/hauptkanalRechts/
     - assets/pbglion.png
+    - assets/background.jpg
     - assets/flick.wav
     - assets/swoosh.wav
     - assets/suck.wav
     - assets/bad.mp3
+    - assets/515615__mrthenoronha__8-bit-game-theme.wav
+    - assets/518305__mrthenoronha__stage-clear-8-bit.wav
+    - assets/520937__mrthenoronha__8-bit-game-intro-loop.wav
+    - assets/516824__mrthenoronha__get-item-4-8-bit.wav
     - lang/de.json
     - lang/en.json

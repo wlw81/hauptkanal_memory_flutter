@@ -18,7 +18,7 @@ class GameCardItem extends StatefulWidget {
 class _MyAppState extends State<GameCardItem>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
+  Animation<Offset> _slideInAnimation;
   int beginAnimation = 0;
   final _assetsAudioPlayer = AssetsAudioPlayer();
 
@@ -40,14 +40,15 @@ class _MyAppState extends State<GameCardItem>
       vsync: this,
     );
 
-    _offsetAnimation = Tween<Offset>(
-      end: Offset.zero,
-      begin: const Offset(0.0, 1.2),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
     reset();
   }
 
   Future reset() async {
+    _slideInAnimation = Tween<Offset>(
+      end: Offset.zero,
+      begin: const Offset(0.0, 1.2),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+
     _controller.reset();
     return Future.delayed(
       Duration(milliseconds: beginAnimation),
@@ -55,10 +56,16 @@ class _MyAppState extends State<GameCardItem>
     );
   }
 
-
-  animate() async{
+  animate() async {
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-     await _controller.forward();
+    await _controller.forward().whenComplete(() =>     _controller..repeat(reverse: true));
+    _slideInAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0.0, 0.05),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.ease,
+    ));
   }
 
   @override
@@ -75,7 +82,7 @@ class _MyAppState extends State<GameCardItem>
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
-      position: _offsetAnimation,
+      position: _slideInAnimation,
       child: Card(
         elevation: 4,
         child: ClipRRect(

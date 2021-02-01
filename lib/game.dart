@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:hauptkanalmemory/cardSelector.dart';
 import 'package:hauptkanalmemory/countdown.dart';
 import 'package:hauptkanalmemory/scoreDisplay.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:vibration/vibration.dart';
+import 'package:flutter/services.dart';
 
 import 'flags.dart';
 
@@ -28,6 +30,7 @@ class Game extends StatefulWidget {
 
 class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBindingObserver {
   final assetsAudioPlayer = AssetsAudioPlayer();
+  final assetsAudioPlayerMusic = AssetsAudioPlayer();
   List<FileSystemEntity> imageNames;
   int currentNumber = 0;
   int lastRandomNumber;
@@ -41,12 +44,15 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    playMusic();
 
     if (_timer == null || !_timer.isActive) {
       startTimer();
     }
 
     WidgetsBinding.instance.addObserver(this);
+    Wakelock.enable();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -62,9 +68,13 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
   @override
   void dispose() {
     try {
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      assetsAudioPlayerMusic.stop();
+      assetsAudioPlayer.stop();
       WidgetsBinding.instance.removeObserver(this);
       _timer.cancel();
       _controller.dispose();
+      Wakelock.disable();
     } finally {
       super.dispose();
     }
@@ -116,6 +126,10 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
 
   playFlickAudio() async {
     assetsAudioPlayer.open(Audio("assets/flick.wav"));
+  }
+
+  playMusic() async {
+    assetsAudioPlayerMusic.open(Audio("assets/515615__mrthenoronha__8-bit-game-theme.wav"), loopMode: LoopMode.single);
   }
 
   playWrongAudio() async {
@@ -213,7 +227,15 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.resumed ){
      close(false);
+    }else if (state == AppLifecycleState.paused){
+      assetsAudioPlayerMusic.pause();
     }
+  }
+
+  @override
+  Future<bool> didPopRoute() {
+    close(false);
+    return super.didPopRoute();
   }
 
   void preCacheNextImage() async {

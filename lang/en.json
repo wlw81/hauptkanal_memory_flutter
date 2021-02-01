@@ -6,5 +6,7 @@
   "hauptkanalRechts": "Hauptkanal Right 2018",
   "introduction": "Can you reach the train station?\nTap on the next house and crack the high score!",
   "legal": "Coding & design: Thomas Pasligh (QA: klokodax)\n\nAll displayed image copyright remains by its respective owners.",
-  "scoreboard": "Leaderboard"
+  "scoreboard": "Leaderboard",
+  "selectStreet" : "Select a street",
+  "about": "About"
 }

@@ -6,5 +6,7 @@
   "hauptkanalRechts": "Hauptkanal Rechts 2018",
   "introduction": "Schaffst du es bis zum Bahnhof?\nTippe immer auf das nächste Haus und knacke den High-Score!",
   "legal": "Coding & Design: Thomas Pasligh (QA: klokodax)\nSämtliche dargestellten Bilder, Marken, Urheber- & Eigentumsrechte verbleiben bei ihren jeweiligen Eigentümer.",
-  "scoreboard": "Bestenliste"
+  "scoreboard": "Bestenliste",
+  "selectStreet" : "Wählen Sie eine Straße",
+  "about": "Über Hauptkanal Memory"
 }
