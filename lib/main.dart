@@ -293,7 +293,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
 
   playLevelFinishedMusic() async {
     assetsAudioPlayerMusic.stop();
-    await assetsAudioPlayerEffects.open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav")).whenComplete(() => playMusic());
+    await assetsAudioPlayerEffects.open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
   }
 
   _startGame() async {

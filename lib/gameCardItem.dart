@@ -17,14 +17,16 @@ class GameCardItem extends StatefulWidget {
 
 class _MyAppState extends State<GameCardItem>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  AnimationController _controllerSlide;
+  AnimationController _controllerHover;
   Animation<Offset> _slideInAnimation;
   int beginAnimation = 0;
   final _assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controllerSlide.dispose();
+    _controllerHover.dispose();
     super.dispose();
   }
 
@@ -35,7 +37,7 @@ class _MyAppState extends State<GameCardItem>
     beginAnimation += (widget.animationOrder + 1) * 400;
     developer.log('begin animation ' + beginAnimation.toString());
 
-    _controller = AnimationController(
+    _controllerSlide = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
@@ -47,9 +49,9 @@ class _MyAppState extends State<GameCardItem>
     _slideInAnimation = Tween<Offset>(
       end: Offset.zero,
       begin: const Offset(0.0, 1.2),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    ).animate(CurvedAnimation(parent: _controllerSlide, curve: Curves.elasticOut));
 
-    _controller.reset();
+    _controllerSlide.reset();
     return Future.delayed(
       Duration(milliseconds: beginAnimation),
       () => animate(),
@@ -58,20 +60,19 @@ class _MyAppState extends State<GameCardItem>
 
   animate() async {
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-    await _controller.forward().whenComplete(() =>     hover());
+    await _controllerSlide.forward().whenComplete(() =>     hover());
 
   }
 
   hover(){
-    _controller.reset();
+    _controllerHover..repeat(reverse: true);
     _slideInAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0.0, 0.05),
     ).animate(CurvedAnimation(
-      parent: _controller,
+      parent: _controllerHover,
       curve: Curves.ease,
     ));
-    _controller..repeat(reverse: true);
   }
 
   @override
