@@ -58,7 +58,12 @@ class _MyAppState extends State<GameCardItem>
 
   animate() async {
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-    await _controller.forward().whenComplete(() =>     _controller..repeat(reverse: true));
+    await _controller.forward().whenComplete(() =>     hover());
+
+  }
+
+  hover(){
+    _controller.reset();
     _slideInAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0.0, 0.05),
@@ -66,6 +71,7 @@ class _MyAppState extends State<GameCardItem>
       parent: _controller,
       curve: Curves.ease,
     ));
+    _controller..repeat(reverse: true);
   }
 
   @override
