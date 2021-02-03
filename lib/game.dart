@@ -28,7 +28,8 @@ class Game extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _MyAppState extends State<Game>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final assetsAudioPlayer = AssetsAudioPlayer();
   final assetsAudioPlayerMusic = AssetsAudioPlayer();
   List<FileSystemEntity> imageNames;
@@ -65,6 +66,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   }
 
+  close(bool pSubmitFinal) {
+    dispose();
+    submitScore(pSubmitFinal);
+  }
+
   @override
   void dispose() {
     try {
@@ -77,6 +83,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
       Wakelock.disable();
     } finally {
       super.dispose();
+      submitScore(true);
     }
   }
 
@@ -90,7 +97,7 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
             try {
               timer.cancel();
             } finally {
-              close(true); // out of time
+              close(true);// out of time
             }
           });
         } else {
@@ -102,14 +109,13 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
     );
   }
 
-  close(bool submitScore) {
-    if(submitScore ){
+  submitScore(bool pFinalScore) {
+    if (pFinalScore) {
       developer.log('Final score ' + score.toString());
       widget.onScoreChange(score, true);
-    }else{
+    } else {
       widget.onScoreChange(0, false);
     }
-    Navigator.pop(context);
   }
 
   int _generateHouseNumber() {
@@ -129,7 +135,9 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
   }
 
   playMusic() async {
-    assetsAudioPlayerMusic.open(Audio("assets/515615__mrthenoronha__8-bit-game-theme.wav"), loopMode: LoopMode.single);
+    assetsAudioPlayerMusic.open(
+        Audio("assets/515615__mrthenoronha__8-bit-game-theme.wav"),
+        loopMode: LoopMode.single);
   }
 
   playWrongAudio() async {
@@ -225,17 +233,11 @@ class _MyAppState extends State<Game> with TickerProviderStateMixin, WidgetsBind
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.resumed ){
-     close(false);
-    }else if (state == AppLifecycleState.paused){
+    if (state == AppLifecycleState.resumed) {
+      close(false);
+    } else if (state == AppLifecycleState.paused) {
       assetsAudioPlayerMusic.pause();
     }
-  }
-
-  @override
-  Future<bool> didPopRoute() {
-    close(false);
-    return super.didPopRoute();
   }
 
   void preCacheNextImage() async {

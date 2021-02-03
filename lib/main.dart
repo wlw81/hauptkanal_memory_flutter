@@ -80,7 +80,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _MyHomePageState extends State<MyHomePage>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   int lastScore = 0;
   bool celebrated = false;
 
@@ -97,7 +98,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
   };
 
   playMusic() async {
-    assetsAudioPlayerMusic.open(Audio("assets/520937__mrthenoronha__8-bit-game-intro-loop.wav"), loopMode: LoopMode.single);
+    assetsAudioPlayerMusic.open(
+        Audio("assets/520937__mrthenoronha__8-bit-game-intro-loop.wav"),
+        loopMode: LoopMode.single);
   }
 
   @override
@@ -143,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
   }
 
   @override
-  dispose(){
+  dispose() {
     WidgetsBinding.instance.removeObserver(this);
     assetsAudioPlayerMusic.stop();
     assetsAudioPlayerEffects.stop();
@@ -259,7 +262,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
               onPressed: _startGame,
               child: Icon(Icons.play_arrow),
             )),
-        SlideTransition(position: _offsetAnimationScore,child: ScoreDisplay(lastScore, false)) ],
+        SlideTransition(
+            position: _offsetAnimationScore,
+            child: ScoreDisplay(lastScore, false))
+      ],
     );
   }
 
@@ -269,6 +275,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
         lastScore = pValue;
       });
     } else {
+      playLevelFinishedMusic();
       await firstRun();
       String leaderBoardID = 'error';
       (values[Flags.STREET_LEFT])
@@ -284,27 +291,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin, 
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.resumed ){
-      if(lastScore >0 && !celebrated){
-        playLevelFinishedMusic();
-        celebrated = true;
-      }else{
+    if (state == AppLifecycleState.resumed) {
+      if(celebrated || lastScore == 0) {
         assetsAudioPlayerMusic.play();
       }
-    }else if (state == AppLifecycleState.paused){
+    } else if (state == AppLifecycleState.paused) {
       assetsAudioPlayerMusic.pause();
     }
   }
 
   playLevelFinishedMusic() async {
     assetsAudioPlayerMusic.stop();
-    assetsAudioPlayerEffects.open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
+    await assetsAudioPlayerEffects
+        .open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
+    celebrated = true;
   }
 
   _startGame() async {
     assetsAudioPlayerMusic.pause();
     celebrated = false;
-    await assetsAudioPlayerEffects.open(Audio("assets/516824__mrthenoronha__get-item-4-8-bit.wav"));
+    await assetsAudioPlayerEffects
+        .open(Audio("assets/516824__mrthenoronha__get-item-4-8-bit.wav"));
     String flag = 'error';
     (values[Flags.STREET_LEFT])
         ? flag = Flags.STREET_LEFT

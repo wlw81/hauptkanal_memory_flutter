@@ -15,18 +15,16 @@ class GameCardItem extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<GameCardItem>
-    with SingleTickerProviderStateMixin {
+class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
   AnimationController _controllerSlide;
-  AnimationController _controllerHover;
   Animation<Offset> _slideInAnimation;
   int beginAnimation = 0;
   final _assetsAudioPlayer = AssetsAudioPlayer();
+  Offset begin;
 
   @override
   void dispose() {
     _controllerSlide.dispose();
-    _controllerHover.dispose();
     super.dispose();
   }
 
@@ -37,11 +35,6 @@ class _MyAppState extends State<GameCardItem>
     beginAnimation += (widget.animationOrder + 1) * 400;
     developer.log('begin animation ' + beginAnimation.toString());
 
-    _controllerHover = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-
     _controllerSlide = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -50,32 +43,43 @@ class _MyAppState extends State<GameCardItem>
     reset();
   }
 
-  Future reset() async {
+  reset() {
+    _controllerSlide.reset();
+    begin = Offset(0.0, 1.2);
     _slideInAnimation = Tween<Offset>(
       end: Offset.zero,
-      begin: const Offset(0.0, 1.2),
-    ).animate(CurvedAnimation(parent: _controllerSlide, curve: Curves.elasticOut));
+      begin: begin,
+    ).animate(
+        CurvedAnimation(parent: _controllerSlide, curve: Curves.elasticOut));
 
-    _controllerSlide.reset();
-    return Future.delayed(
+    Future.delayed(
       Duration(milliseconds: beginAnimation),
-      () => animate(),
+          () => _playAnimation(),
     );
   }
 
-  animate() async {
+  _playAnimation() {
+    developer.log(widget.cardImage.image.toString());
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-    _controllerSlide.forward().whenComplete(() =>     hover());
+    _controllerSlide.forward().whenCompleteOrCancel(() {
+      _hover();
+    });
   }
 
-  hover(){
+  _hover() {
+    setState(() {
+      begin = Offset(0.0, 0.05);
+    });
+
     _slideInAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0.0, 0.05),
-    ).animate(CurvedAnimation(
-      parent: _controllerHover,
-      curve: Curves.ease,
-    ));
+      end: Offset.zero,
+      begin: begin,
+    ).animate(
+        CurvedAnimation(parent: _controllerSlide, curve: Curves.ease));
+
+    _controllerSlide
+        .repeat(reverse: true)
+        .orCancel;
   }
 
   @override
