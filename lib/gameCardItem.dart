@@ -52,34 +52,32 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
     ).animate(
         CurvedAnimation(parent: _controllerSlide, curve: Curves.elasticOut));
 
+    // every card gets an increased delay, so the appear one by one
     Future.delayed(
       Duration(milliseconds: beginAnimation),
           () => _playAnimation(),
     );
   }
 
-  _playAnimation() {
+  _playAnimation() async {
+    // first slide in, then let the card hover
     developer.log(widget.cardImage.image.toString());
     _assetsAudioPlayer.open(Audio("assets/suck.wav"));
-    _controllerSlide.forward().whenCompleteOrCancel(() {
-      _hover();
-    });
+    await _controllerSlide.forward().whenComplete(() => _hover());
   }
 
   _hover() {
     setState(() {
       begin = Offset(0.0, 0.05);
+      _slideInAnimation = Tween<Offset>(
+        end: Offset.zero,
+        begin: begin,
+      ).animate(
+          CurvedAnimation(parent: _controllerSlide, curve: Curves.ease));
+      _controllerSlide
+          .repeat(reverse: true)
+          .orCancel;
     });
-
-    _slideInAnimation = Tween<Offset>(
-      end: Offset.zero,
-      begin: begin,
-    ).animate(
-        CurvedAnimation(parent: _controllerSlide, curve: Curves.ease));
-
-    _controllerSlide
-        .repeat(reverse: true)
-        .orCancel;
   }
 
   @override

@@ -67,8 +67,12 @@ class _MyAppState extends State<Game>
   }
 
   close(bool pSubmitFinal) {
-    dispose();
-    submitScore(pSubmitFinal);
+    if(pSubmitFinal){
+      submitScore(true);
+      Navigator.pop(context);
+    }else{
+      dispose();
+    }
   }
 
   @override
@@ -184,7 +188,7 @@ class _MyAppState extends State<Game>
 
   Map<int, Image> _generateRandomCardImages() {
     if (_nextRandomImages == null || _nextRandomImages.isEmpty) {
-      // putting into hashmap, to achieve random order
+
       HashMap newRandomImagesUnsorted = new HashMap<int, Image>();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
         int number = _generateHouseNumber();
