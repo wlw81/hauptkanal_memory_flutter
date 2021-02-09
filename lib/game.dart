@@ -237,7 +237,7 @@ class _MyAppState extends State<Game>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed ||  state == AppLifecycleState.inactive) {
       close(false);
     } else if (state == AppLifecycleState.paused) {
       assetsAudioPlayerMusic.pause();
