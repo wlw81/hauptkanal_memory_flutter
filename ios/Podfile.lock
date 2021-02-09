@@ -1,0 +1,52 @@
+PODS:
+  - assets_audio_player (0.0.1):
+    - Flutter
+  - assets_audio_player_web (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - games_services (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - vibration (1.7.3):
+    - Flutter
+  - wakelock (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - assets_audio_player (from `.symlinks/plugins/assets_audio_player/ios`)
+  - assets_audio_player_web (from `.symlinks/plugins/assets_audio_player_web/ios`)
+  - Flutter (from `Flutter`)
+  - games_services (from `.symlinks/plugins/games_services/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - vibration (from `.symlinks/plugins/vibration/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
+
+EXTERNAL SOURCES:
+  assets_audio_player:
+    :path: ".symlinks/plugins/assets_audio_player/ios"
+  assets_audio_player_web:
+    :path: ".symlinks/plugins/assets_audio_player_web/ios"
+  Flutter:
+    :path: Flutter
+  games_services:
+    :path: ".symlinks/plugins/games_services/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  vibration:
+    :path: ".symlinks/plugins/vibration/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
+
+SPEC CHECKSUMS:
+  assets_audio_player: edee322b9cb625571b830b35872ead1a295fd917
+  assets_audio_player_web: 19826380c44375761aa0b9053665c1e3fbc3b86b
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  games_services: 6c9a23d55bc6ae0129b24507e008643dcb02f341
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  vibration: b5a33e764c3f609a975b9dca73dce20fdde627dc
+  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
+
+PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
+
+COCOAPODS: 1.10.1
