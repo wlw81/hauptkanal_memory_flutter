@@ -41,7 +41,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   assets_audio_player: edee322b9cb625571b830b35872ead1a295fd917
   assets_audio_player_web: 19826380c44375761aa0b9053665c1e3fbc3b86b
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   games_services: 6c9a23d55bc6ae0129b24507e008643dcb02f341
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   vibration: b5a33e764c3f609a975b9dca73dce20fdde627dc

@@ -20,17 +20,19 @@ class ScoreDisplay extends StatelessWidget {
           alignment: ((currentGame) ? Alignment.topRight : Alignment.bottomCenter),
           padding: EdgeInsets.all(25.0),
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(4.0),
-              child: Text(
-                  ( (currentGame) ? AppLocalizations.of(context).translate('score') : AppLocalizations.of(context).translate('lastScore')) +
-                      ' ' + _format.format(_value),
-                  style: GoogleFonts.robotoCondensed(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      textStyle: TextStyle(
-                        decoration: TextDecoration.none,
-                          backgroundColor: Theme.of(context).accentColor,
-                          color: Colors.white)))));
+              borderRadius: BorderRadius.circular(15.0),
+              child: Container(
+                color: Theme.of(context).accentColor,
+                child: Text(
+                    ( (currentGame) ? AppLocalizations.of(context).translate('score') : AppLocalizations.of(context).translate('lastScore')) +
+                        ' ' + _format.format(_value) + ((currentGame) ? '' : ' →'),
+                    style: GoogleFonts.robotoCondensed(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        textStyle: TextStyle(
+                          decoration: TextDecoration.none,
+                            color: Colors.white))),
+              )));
     }
 
 }
