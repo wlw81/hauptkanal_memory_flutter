@@ -72,6 +72,7 @@ class _MyAppState extends State<Game>
       Navigator.pop(context);
     }else{
       dispose();
+      Navigator.pop(context);
     }
   }
 
