@@ -277,13 +277,13 @@ class _MyHomePageState extends State<MyHomePage>
     } else {
       playLevelFinishedMusic();
       await firstRun();
-      String leaderBoardID = 'error';
+      HighScoreList leaderBoardID;
       (values[Flags.STREET_LEFT])
           ? leaderBoardID = Flags.LEADERBORD_LEFT
           : leaderBoardID = Flags.LEADERBORD_RIGHT;
 
       await GamesServices.submitScore(
-          score: Score(androidLeaderboardID: leaderBoardID, value: pValue));
+          score: Score(iOSLeaderboardID: leaderBoardID.iOSID,androidLeaderboardID: leaderBoardID.androidID, value: pValue));
 
       GamesServices.showLeaderboards();
     }
