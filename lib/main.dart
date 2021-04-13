@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage>
     await GamesServices.signIn();
     GamesServices.unlock(
         achievement:
-            Achievement(androidID: Flags.ACHV_WELCOME, percentComplete: 100));
+            Achievement(iOSID: Flags.ACHV_WELCOME_IOS, androidID: Flags.ACHV_WELCOME, percentComplete: 100));
   }
 
   firstRun() async {
@@ -277,13 +277,13 @@ class _MyHomePageState extends State<MyHomePage>
     } else {
       playLevelFinishedMusic();
       await firstRun();
-      HighScoreList leaderBoardID;
+      String leaderBoardID = 'error';
       (values[Flags.STREET_LEFT])
           ? leaderBoardID = Flags.LEADERBORD_LEFT
           : leaderBoardID = Flags.LEADERBORD_RIGHT;
 
       await GamesServices.submitScore(
-          score: Score(iOSLeaderboardID: leaderBoardID.iOSID,androidLeaderboardID: leaderBoardID.androidID, value: pValue));
+          score: Score(androidLeaderboardID: leaderBoardID, value: pValue));
 
       GamesServices.showLeaderboards();
     }
