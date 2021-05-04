@@ -289,7 +289,7 @@ class _MyHomePageState extends State<MyHomePage>
       await GamesServices.submitScore(
           score: Score(androidLeaderboardID: leaderboardAndroid,iOSLeaderboardID: leaderboardIOS , value: pValue));
 
-      GamesServices.showLeaderboards();
+      GamesServices.showLeaderboards(iOSLeaderboardID: leaderboardIOS);
     }
   }
 
