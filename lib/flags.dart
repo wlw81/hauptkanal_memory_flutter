@@ -7,8 +7,10 @@ class Flags {
   static const ACHV_WELCOME = "CgkIwu3zjrEQEAIQAQ";
   static const ACHV_FIRSTRUN_IOS = "firstRun";
   static const ACHV_FIRSTRUN = "CgkIwu3zjrEQEAIQBQ";
-  static const LEADERBORD_LEFT = "CgkIwu3zjrEQEAIQAw";
-  static const LEADERBORD_RIGHT = "CgkIwu3zjrEQEAIQBA";
+  static const LEADERBOARD_LEFT = "CgkIwu3zjrEQEAIQAw";
+  static const LEADERBOARD_RIGHT = "CgkIwu3zjrEQEAIQBA";
+  static const LEADERBAORD_LEFT_IOS = "hauptkanal_left_2018";
+  static const LEADERBOARD_RIGHT_IOS = "hauptkanal_right_2018";
   static const STREET = "SEITE";
   static const LOG = "HAUPTKANAL";
   static const COUNTDOWN_IN_SECONDS = 90;

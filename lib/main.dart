@@ -277,13 +277,17 @@ class _MyHomePageState extends State<MyHomePage>
     } else {
       playLevelFinishedMusic();
       await firstRun();
-      String leaderBoardID = 'error';
-      (values[Flags.STREET_LEFT])
-          ? leaderBoardID = Flags.LEADERBORD_LEFT
-          : leaderBoardID = Flags.LEADERBORD_RIGHT;
+
+      String leaderboardAndroid = Flags.LEADERBOARD_RIGHT;
+      String leaderboardIOS = Flags.LEADERBOARD_RIGHT_IOS;
+
+      if (values[Flags.STREET_LEFT]) {
+        leaderboardAndroid = Flags.LEADERBOARD_LEFT;
+        leaderboardIOS = Flags.LEADERBAORD_LEFT_IOS;
+      }
 
       await GamesServices.submitScore(
-          score: Score(androidLeaderboardID: leaderBoardID, value: pValue));
+          score: Score(androidLeaderboardID: leaderboardAndroid,iOSLeaderboardID: leaderboardIOS , value: pValue));
 
       GamesServices.showLeaderboards();
     }
