@@ -87,7 +87,10 @@ class _MyHomePageState extends State<MyHomePage>
 
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
-  Animation<Offset> _offsetAnimationScore;
+
+  AnimationController _animationControllerFAB;
+  Animation _animationFAB;
+
   final assetsAudioPlayerEffects = AssetsAudioPlayer();
   final assetsAudioPlayerMusic = AssetsAudioPlayer();
 
@@ -116,14 +119,26 @@ class _MyHomePageState extends State<MyHomePage>
       end: const Offset(0.5, 0.0),
     ).animate(_controller);
 
+    _animationControllerFAB =
+        AnimationController(vsync: this, duration: Duration(seconds: 8));
+    _animationControllerFAB.repeat(reverse: true);
+    _animationFAB =
+        Tween(begin: 2.0, end: 15.0).animate(_animationControllerFAB)..addListener((){
+          setState(() {
+
+          });
+        });
+
     welcome();
   }
 
   welcome() async {
     await GamesServices.signIn();
     GamesServices.unlock(
-        achievement:
-            Achievement(iOSID: Flags.ACHV_WELCOME_IOS, androidID: Flags.ACHV_WELCOME, percentComplete: 100));
+        achievement: Achievement(
+            iOSID: Flags.ACHV_WELCOME_IOS,
+            androidID: Flags.ACHV_WELCOME,
+            percentComplete: 100));
   }
 
   firstRun() async {
@@ -244,10 +259,25 @@ class _MyHomePageState extends State<MyHomePage>
                         ],
                       ))),
             ]),
-            floatingActionButton: FloatingActionButton(
-              onPressed: _startGame,
-              child: Icon(Icons.play_arrow),
-            ), floatingActionButtonLocation:FloatingActionButtonLocation.centerDocked),
+            floatingActionButton: Container(
+              width: 64,
+              height: 64,
+              child: FloatingActionButton(
+                onPressed: _startGame,
+                child: Icon(Icons.play_arrow),
+              ),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromARGB(255, 27, 28, 30),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Theme.of(context).primaryColor,
+                        blurRadius: _animationFAB.value*4,
+                        spreadRadius: _animationFAB.value*4)
+                  ]),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked),
       ],
     );
   }
@@ -270,7 +300,10 @@ class _MyHomePageState extends State<MyHomePage>
       }
 
       await GamesServices.submitScore(
-          score: Score(androidLeaderboardID: leaderboardAndroid,iOSLeaderboardID: leaderboardIOS , value: pValue));
+          score: Score(
+              androidLeaderboardID: leaderboardAndroid,
+              iOSLeaderboardID: leaderboardIOS,
+              value: pValue));
 
       GamesServices.showLeaderboards(iOSLeaderboardID: leaderboardIOS);
     }
@@ -279,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if(celebrated || lastScore == 0) {
+      if (celebrated || lastScore == 0) {
         assetsAudioPlayerMusic.play();
       }
     } else if (state == AppLifecycleState.paused) {
