@@ -86,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage>
   bool celebrated = false;
 
   AnimationController _controller;
-  AnimationController _controllerScore;
   Animation<Offset> _offsetAnimation;
   Animation<Offset> _offsetAnimationScore;
   final assetsAudioPlayerEffects = AssetsAudioPlayer();
@@ -116,18 +115,6 @@ class _MyHomePageState extends State<MyHomePage>
       begin: Offset.zero,
       end: const Offset(0.5, 0.0),
     ).animate(_controller);
-
-    _controllerScore = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-    _offsetAnimationScore = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(-0.2, 0.0),
-    ).animate(CurvedAnimation(
-      parent: _controllerScore,
-      curve: Curves.elasticIn,
-    ));
 
     welcome();
   }
@@ -175,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage>
     return Stack(
       children: [
         Positioned.fill(
-          //
           child: SlideTransition(
             position: _offsetAnimation,
             child: OverflowBox(
@@ -261,10 +247,7 @@ class _MyHomePageState extends State<MyHomePage>
             floatingActionButton: FloatingActionButton(
               onPressed: _startGame,
               child: Icon(Icons.play_arrow),
-            )),
-        SlideTransition(
-            position: _offsetAnimationScore,
-            child: ScoreDisplay(lastScore, false))
+            ), floatingActionButtonLocation:FloatingActionButtonLocation.centerDocked),
       ],
     );
   }
