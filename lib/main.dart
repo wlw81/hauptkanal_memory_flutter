@@ -7,7 +7,6 @@ import 'package:games_services/games_services.dart';
 import 'package:hauptkanalmemory/app_localizations.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
-import 'package:hauptkanalmemory/scoreDisplay.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
@@ -184,6 +183,7 @@ class _MyHomePageState extends State<MyHomePage>
               minHeight: 0.0,
               maxWidth: double.infinity,
               child: Image(
+                fit: BoxFit.cover,
                 image: AssetImage('assets/background.jpg'),
               ),
             ),
@@ -262,6 +262,7 @@ class _MyHomePageState extends State<MyHomePage>
             floatingActionButton: Container(
               width: 64,
               height: 64,
+              margin: const EdgeInsets.all(32.0),
               child: FloatingActionButton(
                 onPressed: _startGame,
                 child: Icon(Icons.play_arrow),

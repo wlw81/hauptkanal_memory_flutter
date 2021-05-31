@@ -16,11 +16,12 @@ class ScoreDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return Container(
-          alignment: ((currentGame) ? Alignment.topRight : Alignment.bottomLeft),
+          alignment: Alignment.topRight ,
           padding: EdgeInsets.all(25.0),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
               child: Container(
+                padding: EdgeInsets.all(4.0),
                 color: Theme.of(context).accentColor,
                 child: Text(
                     ( (currentGame) ? AppLocalizations.of(context).translate('score') +' '+_format.format(_value):  'Start →'),

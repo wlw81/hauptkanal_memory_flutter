@@ -96,7 +96,7 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
     return SlideTransition(
       position: _slideInAnimation,
       child: Card(
-        elevation: 4,
+        elevation: 8,
         child: ClipRRect(
             borderRadius: BorderRadius.circular(4.0), child: widget.cardImage),
       ),
