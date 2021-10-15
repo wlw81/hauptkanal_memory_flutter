@@ -37,23 +37,29 @@ void main() {
   return runApp(MyApp());
 }
 
-final String appName = 'Hauptkanal Memory';
+final String appName = 'Hauptkanal Shuffle';
+
+final ThemeData theme = ThemeData();
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          primaryColor: Colors.deepPurple[700],
-          secondaryHeaderColor: Colors.deepPurple[100],
-          fontFamily: 'Roboto',
-          dividerColor: Colors.grey[400],
-          textTheme: TextTheme(
-              caption: TextStyle(color: Colors.grey[900]),
-              bodyText1: TextStyle(color: Colors.white),
-              bodyText2: TextStyle(color: Colors.grey[600])),
-          accentColor: Colors.purpleAccent),
+      theme: theme.copyWith(
+        primaryColor: Colors.deepPurple[700],
+        secondaryHeaderColor: Colors.deepPurple[100],
+        colorScheme: theme.colorScheme.copyWith(
+          secondary: Colors.purpleAccent,
+          primary: Colors.deepPurple[700],
+        ),
+        dividerColor: Colors.grey[400],
+          toggleableActiveColor: Colors.purpleAccent,
+        textTheme: TextTheme(
+            caption: TextStyle(color: Colors.grey[900]),
+            bodyText1: TextStyle(color: Colors.white),
+            bodyText2: TextStyle(color: Colors.grey[600])),
+      ),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -122,11 +128,10 @@ class _MyHomePageState extends State<MyHomePage>
         AnimationController(vsync: this, duration: Duration(seconds: 8));
     _animationControllerFAB.repeat(reverse: true);
     _animationFAB =
-        Tween(begin: 2.0, end: 15.0).animate(_animationControllerFAB)..addListener((){
-          setState(() {
-
+        Tween(begin: 2.0, end: 15.0).animate(_animationControllerFAB)
+          ..addListener(() {
+            setState(() {});
           });
-        });
 
     welcome();
   }
@@ -273,8 +278,8 @@ class _MyHomePageState extends State<MyHomePage>
                   boxShadow: [
                     BoxShadow(
                         color: Theme.of(context).primaryColor,
-                        blurRadius: _animationFAB.value*4,
-                        spreadRadius: _animationFAB.value*4)
+                        blurRadius: _animationFAB.value * 4,
+                        spreadRadius: _animationFAB.value * 4)
                   ]),
             ),
             floatingActionButtonLocation:

@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:icon="@mipmap/memory"
-        android:label="Hauptkanal Memory">
+        android:label="Hauptkanal Shuffle">
 
         <activity
             android:name=".MainActivity"
