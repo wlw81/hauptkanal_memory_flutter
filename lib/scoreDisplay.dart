@@ -22,7 +22,7 @@ class ScoreDisplay extends StatelessWidget {
               borderRadius: BorderRadius.circular(15.0),
               child: Container(
                 padding: EdgeInsets.all(4.0),
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.primary,
                 child: Text(
                     ( (currentGame) ? AppLocalizations.of(context).translate('score') +' '+_format.format(_value):  'Start →'),
                     style: GoogleFonts.robotoCondensed(

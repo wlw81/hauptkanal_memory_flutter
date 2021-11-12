@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
       theme: theme.copyWith(
         primaryColor: Colors.deepPurple[700],
         secondaryHeaderColor: Colors.deepPurple[100],
+        canvasColor: Colors.deepPurple[100],
         colorScheme: theme.colorScheme.copyWith(
           secondary: Colors.purpleAccent,
           primary: Colors.deepPurple[700],
@@ -202,6 +203,7 @@ class _MyHomePageState extends State<MyHomePage>
               actions: <Widget>[
                 PopupMenuButton<String>(
                   onSelected: handleMenuClick,
+                  color: Theme.of(context).primaryColor,
                   itemBuilder: (BuildContext context) {
                     return <String>[
                       AppLocalizations.of(context).translate('scoreboard'),
