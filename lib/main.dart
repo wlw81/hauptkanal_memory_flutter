@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme.copyWith(
+        useMaterial3: true,
         primaryColor: Colors.deepPurple[700],
         secondaryHeaderColor: Colors.deepPurple[100],
         canvasColor: Colors.deepPurple[100],
@@ -55,7 +56,10 @@ class MyApp extends StatelessWidget {
           primary: Colors.deepPurple[700],
         ),
         dividerColor: Colors.grey[400],
-          toggleableActiveColor: Colors.purpleAccent,
+        toggleableActiveColor: Colors.purpleAccent,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.purpleAccent,
+        ),
         textTheme: TextTheme(
             caption: TextStyle(color: Colors.grey[900]),
             bodyText1: TextStyle(color: Colors.white),
@@ -199,7 +203,9 @@ class _MyHomePageState extends State<MyHomePage>
             backgroundColor: Colors.transparent,
             // <-- SCAFFOLD WITH TRANSPARENT BG
             appBar: AppBar(
-              title: Text(widget.title),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Text(widget.title, style: Theme.of(context).textTheme.headlineSmall.copyWith(color: Theme.of(context).primaryColor),),
               actions: <Widget>[
                 PopupMenuButton<String>(
                   onSelected: handleMenuClick,
