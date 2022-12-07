@@ -79,7 +79,7 @@ class _MyAppState extends State<Game>
   @override
   void dispose() {
     try {
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
       assetsAudioPlayerMusic.stop();
       assetsAudioPlayer.stop();
       WidgetsBinding.instance.removeObserver(this);
