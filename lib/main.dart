@@ -11,6 +11,7 @@ import 'package:hauptkanalmemory/welcomeFlip.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
 import 'flags.dart';
+import 'pbgLocalsLogo.dart';
 
 void main() {
   ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
             caption: TextStyle(color: Colors.grey[900]),
             bodyText1: TextStyle(color: Colors.white),
-            bodyText2: TextStyle(color: Colors.grey[600])),
+            bodyText2: TextStyle(color: Colors.deepPurple[100])),
       ),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
@@ -212,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    .copyWith(color: Theme.of(context).primaryColor),
+                    .copyWith(color: Theme.of(context).primaryColor, fontStyle: FontStyle.italic),
               ),
               actions: <Widget>[
                 PopupMenuButton<String>(
@@ -250,9 +251,9 @@ class _MyHomePageState extends State<MyHomePage>
                                   bottom: 8, left: 20, right: 20, top: 20),
                               child: Text(
                                   AppLocalizations.of(context)
-                                      .translate('selectStreet'),
+                                      .translate('selectStreet').toUpperCase(),
                                   style:
-                                      Theme.of(context).textTheme.bodyText1)),
+                                      Theme.of(context).textTheme.bodyLarge)),
                           Column(
                             children: values.keys.map((String key) {
                               return CheckboxListTile(
@@ -261,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 title: Text(
                                     AppLocalizations.of(context).translate(key),
                                     style:
-                                        Theme.of(context).textTheme.bodyText1),
+                                        Theme.of(context).textTheme.bodyMedium),
                                 value: values[key],
                                 onChanged: (bool value) {
                                   setState(() {
@@ -299,6 +300,7 @@ class _MyHomePageState extends State<MyHomePage>
                           ),
                         ],
                       ))),
+              PbgLocalsLogo(),
             ]),
             floatingActionButton: Container(
               width: 64,
