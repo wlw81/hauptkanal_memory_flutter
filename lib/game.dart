@@ -44,7 +44,7 @@ class _MyAppState extends State<Game>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     playMusic();
 
     if (_timer == null || !_timer.isActive) {
@@ -193,12 +193,12 @@ class _MyAppState extends State<Game>
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
         int number = _generateHouseNumber();
         newRandomImagesUnsorted.putIfAbsent(number,
-            () => Image.asset(widget.streetImageNames.elementAt(number)));
+            () => Image.asset(widget.streetImageNames.elementAt(number), fit: BoxFit.cover,));
       }
       newRandomImagesUnsorted.putIfAbsent(
           currentNumber + 1,
           () => Image.asset(
-              widget.streetImageNames.elementAt(currentNumber + 1)));
+              widget.streetImageNames.elementAt(currentNumber + 1), fit: BoxFit.cover));
       _nextRandomImages = Map.from(newRandomImagesUnsorted);
     }
     return _nextRandomImages;
@@ -255,8 +255,8 @@ class _MyAppState extends State<Game>
               context);
         }
       }
-    } catch (Exception) {
-      developer.log('Failed to pre cache: ' + Exception.toString());
+    } catch (e) {
+      developer.log('Failed to pre cache: ' + e.toString());
     }
   }
 }

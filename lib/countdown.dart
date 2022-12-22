@@ -21,7 +21,7 @@ class Countdown extends StatelessWidget {
         style: GoogleFonts.robotoCondensed(
             fontSize: 95,
             fontStyle: FontStyle.italic,
-            textStyle: TextStyle(color: Colors.white54)))
+            textStyle: (_secondsRemaining > 10 ? TextStyle(color: Colors.white54) : TextStyle(color: Colors.red[400]))))
     ;
   }
 

@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:games_services/games_services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/app_localizations.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
@@ -210,10 +211,7 @@ class _MyHomePageState extends State<MyHomePage>
               elevation: 0,
               title: Text(
                 widget.title,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    .copyWith(color: Theme.of(context).primaryColor, fontStyle: FontStyle.italic),
+                style: GoogleFonts.roboto(color: Theme.of(context).primaryColor ),
               ),
               actions: <Widget>[
                 PopupMenuButton<String>(
@@ -251,7 +249,8 @@ class _MyHomePageState extends State<MyHomePage>
                                   bottom: 8, left: 20, right: 20, top: 20),
                               child: Text(
                                   AppLocalizations.of(context)
-                                      .translate('selectStreet').toUpperCase(),
+                                      .translate('selectStreet')
+                                      .toUpperCase(),
                                   style:
                                       Theme.of(context).textTheme.bodyLarge)),
                           Column(
@@ -342,11 +341,11 @@ class _MyHomePageState extends State<MyHomePage>
         leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
         leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
       } else if (values[Flags.STREET_2022_LEFT]) {
-        leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
-        leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
+        leaderboardAndroid = Flags.LEADERBOARD_2022_LEFT;
+        leaderboardIOS = Flags.LEADERBAORD_2022_LEFT_IOS;
       } else if (values[Flags.STREET_2022_RIGHT]) {
-        leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
-        leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
+        leaderboardAndroid = Flags.LEADERBOARD_2022_RIGHT;
+        leaderboardIOS = Flags.LEADERBOARD_2022_RIGHT_IOS;
       }
 
       await GamesServices.submitScore(
@@ -383,9 +382,12 @@ class _MyHomePageState extends State<MyHomePage>
     await assetsAudioPlayerEffects
         .open(Audio("assets/516824__mrthenoronha__get-item-4-8-bit.wav"));
     String flag = 'error';
-    (values[Flags.STREET_2018_LEFT])
-        ? flag = Flags.STREET_2018_LEFT
-        : flag = Flags.STREET_2018_RIGHT;
+    values.forEach((key, value) {
+      if (value == true) {
+        flag = key;
+        developer.log('Selected street ' + flag);
+      }
+    });
 
     // >> To get paths you need these 2 lines
     final manifestContent =
@@ -400,7 +402,7 @@ class _MyHomePageState extends State<MyHomePage>
         .toList();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      developer.log('Selected street ' + flag);
+      developer.log('Starting in street ' + flag);
       return Game(onScoreChange, imagePaths);
     }));
   }

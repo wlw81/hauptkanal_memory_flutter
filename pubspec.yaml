@@ -54,6 +54,8 @@ flutter:
   assets:
     - assets/left2018/
     - assets/right2018/
+    - assets/left2022/
+    - assets/right2022/
     - assets/pbglion.png
     - assets/pbgLocals.png
     - assets/background.jpg
