@@ -16,11 +16,10 @@ import 'package:flutter/services.dart';
 import 'flags.dart';
 
 class Game extends StatefulWidget {
-  final String currentStreet;
   final Function(int, bool) onScoreChange;
   final List<String> streetImageNames;
 
-  Game(this.currentStreet, this.onScoreChange, this.streetImageNames);
+  Game(this.onScoreChange, this.streetImageNames);
 
   @override
   State<StatefulWidget> createState() {

@@ -52,8 +52,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/hauptkanalLinks/
-    - assets/hauptkanalRechts/
+    - assets/left2018/
+    - assets/right2018/
     - assets/pbglion.png
     - assets/pbgLocals.png
     - assets/background.jpg

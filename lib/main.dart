@@ -125,8 +125,7 @@ class _MyHomePageState extends State<MyHomePage>
     _controller = AnimationController(
       duration: const Duration(seconds: 60),
       vsync: this,
-    )
-      ..repeat(reverse: true);
+    )..repeat(reverse: true);
     _offsetAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0.5, 0.0),
@@ -136,10 +135,10 @@ class _MyHomePageState extends State<MyHomePage>
         AnimationController(vsync: this, duration: Duration(seconds: 8));
     _animationControllerFAB.repeat(reverse: true);
     _animationFAB =
-    Tween(begin: 2.0, end: 15.0).animate(_animationControllerFAB)
-      ..addListener(() {
-        setState(() {});
-      });
+        Tween(begin: 2.0, end: 15.0).animate(_animationControllerFAB)
+          ..addListener(() {
+            setState(() {});
+          });
 
     welcome();
   }
@@ -156,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage>
   firstRun() async {
     return GamesServices.unlock(
         achievement:
-        Achievement(androidID: Flags.ACHV_FIRSTRUN, percentComplete: 100));
+            Achievement(androidID: Flags.ACHV_FIRSTRUN, percentComplete: 100));
   }
 
   @override
@@ -176,13 +175,8 @@ class _MyHomePageState extends State<MyHomePage>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Theme
-                .of(context)
-                .dividerColor,
-            title: Text(info, style: Theme
-                .of(context)
-                .textTheme
-                .bodyText1),
+            backgroundColor: Theme.of(context).dividerColor,
+            title: Text(info, style: Theme.of(context).textTheme.bodyText1),
           );
         },
       );
@@ -213,19 +207,17 @@ class _MyHomePageState extends State<MyHomePage>
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: Text(widget.title, style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall
-                  .copyWith(color: Theme
-                  .of(context)
-                  .primaryColor),),
+              title: Text(
+                widget.title,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    .copyWith(color: Theme.of(context).primaryColor),
+              ),
               actions: <Widget>[
                 PopupMenuButton<String>(
                   onSelected: handleMenuClick,
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
+                  color: Theme.of(context).primaryColor,
                   itemBuilder: (BuildContext context) {
                     return <String>[
                       AppLocalizations.of(context).translate('scoreboard'),
@@ -243,15 +235,13 @@ class _MyHomePageState extends State<MyHomePage>
             body: ListView(children: <Widget>[
               Padding(
                   padding:
-                  EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
+                      EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
                   child: WelcomeFlip()),
               Padding(
                   padding:
-                  EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
+                      EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
                   child: Card(
-                      color: Theme
-                          .of(context)
-                          .primaryColor,
+                      color: Theme.of(context).primaryColor,
                       child: Column(
                         children: [
                           Container(
@@ -262,22 +252,16 @@ class _MyHomePageState extends State<MyHomePage>
                                   AppLocalizations.of(context)
                                       .translate('selectStreet'),
                                   style:
-                                  Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyText1)),
+                                      Theme.of(context).textTheme.bodyText1)),
                           Column(
                             children: values.keys.map((String key) {
                               return CheckboxListTile(
                                 controlAffinity:
-                                ListTileControlAffinity.leading,
+                                    ListTileControlAffinity.leading,
                                 title: Text(
                                     AppLocalizations.of(context).translate(key),
                                     style:
-                                    Theme
-                                        .of(context)
-                                        .textTheme
-                                        .bodyText1),
+                                        Theme.of(context).textTheme.bodyText1),
                                 value: values[key],
                                 onChanged: (bool value) {
                                   setState(() {
@@ -329,15 +313,13 @@ class _MyHomePageState extends State<MyHomePage>
                   color: Color.fromARGB(255, 27, 28, 30),
                   boxShadow: [
                     BoxShadow(
-                        color: Theme
-                            .of(context)
-                            .primaryColor,
+                        color: Theme.of(context).primaryColor,
                         blurRadius: _animationFAB.value * 4,
                         spreadRadius: _animationFAB.value * 4)
                   ]),
             ),
             floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked),
+                FloatingActionButtonLocation.centerDocked),
       ],
     );
   }
@@ -355,6 +337,12 @@ class _MyHomePageState extends State<MyHomePage>
       String leaderboardIOS = Flags.LEADERBOARD_2018_RIGHT_IOS;
 
       if (values[Flags.STREET_2018_LEFT]) {
+        leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
+        leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
+      } else if (values[Flags.STREET_2022_LEFT]) {
+        leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
+        leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
+      } else if (values[Flags.STREET_2022_RIGHT]) {
         leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
         leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
       }
@@ -399,7 +387,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     // >> To get paths you need these 2 lines
     final manifestContent =
-    await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
 
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
     // >> To get paths you need these 2 lines
@@ -411,7 +399,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       developer.log('Selected street ' + flag);
-      return Game(flag, onScoreChange, imagePaths);
+      return Game(onScoreChange, imagePaths);
     }));
   }
 }
