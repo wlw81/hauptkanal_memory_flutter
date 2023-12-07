@@ -17,7 +17,6 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  intl: "^0.18.1"
 
   flutter:
     sdk: flutter
@@ -34,6 +33,7 @@ dependencies:
   flip_card: ^0.7.0
   vibration: ^1.7.3
   wakelock: ^0.6.2
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -69,3 +69,5 @@ flutter:
     - assets/516824__mrthenoronha__get-item-4-8-bit.wav
     - lang/de.json
     - lang/en.json
+flutter_intl:
+  enabled: true
