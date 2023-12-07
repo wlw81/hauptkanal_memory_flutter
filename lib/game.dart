@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:developer' as developer;
-import 'dart:io';
 import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
@@ -31,15 +30,14 @@ class _MyAppState extends State<Game>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   final assetsAudioPlayer = AssetsAudioPlayer();
   final assetsAudioPlayerMusic = AssetsAudioPlayer();
-  List<FileSystemEntity> imageNames;
   int currentNumber = 0;
-  int lastRandomNumber;
+  int lastRandomNumber = 0;
   int score = 0;
-  Map<int, Image> _nextRandomImages;
+  Map<int, Image> _nextRandomImages = new HashMap<int, Image>();
   int secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
-  AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
-  Timer _timer;
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -47,7 +45,7 @@ class _MyAppState extends State<Game>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     playMusic();
 
-    if (_timer == null || !_timer.isActive) {
+    if (!_timer.isActive) {
       startTimer();
     }
 
@@ -66,10 +64,10 @@ class _MyAppState extends State<Game>
   }
 
   close(bool pSubmitFinal) {
-    if(pSubmitFinal){
+    if (pSubmitFinal) {
       submitScore(true);
       Navigator.pop(context);
-    }else{
+    } else {
       dispose();
       Navigator.pop(context);
     }
@@ -78,7 +76,8 @@ class _MyAppState extends State<Game>
   @override
   void dispose() {
     try {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
       assetsAudioPlayerMusic.stop();
       assetsAudioPlayer.stop();
       WidgetsBinding.instance.removeObserver(this);
@@ -101,7 +100,7 @@ class _MyAppState extends State<Game>
             try {
               timer.cancel();
             } finally {
-              close(true);// out of time
+              close(true); // out of time
             }
           });
         } else {
@@ -146,7 +145,7 @@ class _MyAppState extends State<Game>
 
   playWrongAudio() async {
     try {
-      if (await Vibration.hasVibrator()) {
+      if (await (Vibration.hasVibrator()) ?? false) {
         Vibration.vibrate(duration: 200);
       }
     } finally {
@@ -187,18 +186,22 @@ class _MyAppState extends State<Game>
   }
 
   Map<int, Image> _generateRandomCardImages() {
-    if (_nextRandomImages == null || _nextRandomImages.isEmpty) {
-
+    if (_nextRandomImages.isEmpty) {
       HashMap newRandomImagesUnsorted = new HashMap<int, Image>();
       for (int i = 0; i < Flags.RANDOM_CARD_COUNT - 1; i++) {
         int number = _generateHouseNumber();
-        newRandomImagesUnsorted.putIfAbsent(number,
-            () => Image.asset(widget.streetImageNames.elementAt(number), fit: BoxFit.cover,));
+        newRandomImagesUnsorted.putIfAbsent(
+            number,
+            () => Image.asset(
+                  widget.streetImageNames.elementAt(number),
+                  fit: BoxFit.cover,
+                ));
       }
       newRandomImagesUnsorted.putIfAbsent(
           currentNumber + 1,
           () => Image.asset(
-              widget.streetImageNames.elementAt(currentNumber + 1), fit: BoxFit.cover));
+              widget.streetImageNames.elementAt(currentNumber + 1),
+              fit: BoxFit.cover));
       _nextRandomImages = Map.from(newRandomImagesUnsorted);
     }
     return _nextRandomImages;
@@ -237,7 +240,8 @@ class _MyAppState extends State<Game>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed ||  state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.resumed ||
+        state == AppLifecycleState.inactive) {
       close(false);
     } else if (state == AppLifecycleState.paused) {
       assetsAudioPlayerMusic.pause();

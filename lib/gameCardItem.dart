@@ -16,11 +16,11 @@ class GameCardItem extends StatefulWidget {
 }
 
 class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
-  AnimationController _controllerSlide;
-  Animation<Offset> _slideInAnimation;
+  late AnimationController _controllerSlide;
+  late Animation<Offset> _slideInAnimation;
   int beginAnimation = 0;
   final _assetsAudioPlayer = AssetsAudioPlayer();
-  Offset begin;
+  Offset _begin = Offset(0.0, 1.2);
 
   @override
   void dispose() {
@@ -45,17 +45,17 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
 
   reset() {
     _controllerSlide.reset();
-    begin = Offset(0.0, 1.2);
+    _begin = Offset(0.0, 1.2);
     _slideInAnimation = Tween<Offset>(
       end: Offset.zero,
-      begin: begin,
+      begin: _begin,
     ).animate(
         CurvedAnimation(parent: _controllerSlide, curve: Curves.elasticOut));
 
     // every card gets an increased delay, so the appear one by one
     Future.delayed(
       Duration(milliseconds: beginAnimation),
-          () => _playAnimation(),
+      () => _playAnimation(),
     );
   }
 
@@ -68,15 +68,12 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
 
   _hover() {
     setState(() {
-      begin = Offset(0.0, 0.05);
+      _begin = Offset(0.0, 0.05);
       _slideInAnimation = Tween<Offset>(
         end: Offset.zero,
-        begin: begin,
-      ).animate(
-          CurvedAnimation(parent: _controllerSlide, curve: Curves.ease));
-      _controllerSlide
-          .repeat(reverse: true)
-          .orCancel;
+        begin: _begin,
+      ).animate(CurvedAnimation(parent: _controllerSlide, curve: Curves.ease));
+      _controllerSlide.repeat(reverse: true).orCancel;
     });
   }
 
@@ -96,11 +93,12 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
     return SlideTransition(
       position: _slideInAnimation,
       child: SizedBox(
-        width: (MediaQuery.of(context).size.width / 3)-4,
+        width: (MediaQuery.of(context).size.width / 3) - 4,
         child: Card(
           elevation: 8,
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(4.0), child: widget.cardImage),
+              borderRadius: BorderRadius.circular(4.0),
+              child: widget.cardImage),
         ),
       ),
     );

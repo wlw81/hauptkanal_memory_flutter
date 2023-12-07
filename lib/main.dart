@@ -11,7 +11,6 @@ import 'package:hauptkanalmemory/game.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
-import 'flags.dart';
 import 'pbgLocalsLogo.dart';
 
 void main() {
@@ -49,7 +48,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme.copyWith(
-        useMaterial3: true,
         primaryColor: Colors.deepPurple[700],
         secondaryHeaderColor: Colors.deepPurple[100],
         canvasColor: Colors.deepPurple[100],
@@ -58,14 +56,13 @@ class MyApp extends StatelessWidget {
           primary: Colors.deepPurple[700],
         ),
         dividerColor: Colors.grey[400],
-        toggleableActiveColor: Colors.purpleAccent,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: Colors.purpleAccent,
         ),
         textTheme: TextTheme(
-            caption: TextStyle(color: Colors.grey[900]),
-            bodyText1: TextStyle(color: Colors.white),
-            bodyText2: TextStyle(color: Colors.deepPurple[100])),
+            bodySmall: TextStyle(color: Colors.grey[900]),
+            bodyLarge: TextStyle(color: Colors.white),
+            bodyMedium: TextStyle(color: Colors.deepPurple[100])),
       ),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
@@ -76,7 +73,7 @@ class MyApp extends StatelessWidget {
       localeResolutionCallback: (locale, supportedLocales) {
         // Check if the current device locale is supported
         for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale.languageCode) {
+          if (supportedLocale.languageCode == locale?.languageCode) {
             return supportedLocale;
           }
         }
@@ -84,9 +81,7 @@ class MyApp extends StatelessWidget {
         // from the list (English, in this case).
         return supportedLocales.first;
       },
-      home: MyHomePage(
-        title: appName,
-      ),
+      home: MyHomePage( appName),
       title: appName,
     );
   }
@@ -97,11 +92,11 @@ class _MyHomePageState extends State<MyHomePage>
   int lastScore = 0;
   bool celebrated = false;
 
-  AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
 
-  AnimationController _animationControllerFAB;
-  Animation _animationFAB;
+  late AnimationController _animationControllerFAB;
+  late Animation _animationFAB;
 
   final assetsAudioPlayerEffects = AssetsAudioPlayer();
   final assetsAudioPlayerMusic = AssetsAudioPlayer();
@@ -178,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage>
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Theme.of(context).dividerColor,
-            title: Text(info, style: Theme.of(context).textTheme.bodyText1),
+            title: Text(info, style: Theme.of(context).textTheme.bodyLarge),
           );
         },
       );
@@ -211,7 +206,8 @@ class _MyHomePageState extends State<MyHomePage>
               elevation: 0,
               title: Text(
                 widget.title,
-                style: GoogleFonts.roboto(color: Theme.of(context).primaryColor ),
+                style:
+                    GoogleFonts.roboto(color: Theme.of(context).primaryColor),
               ),
               actions: <Widget>[
                 PopupMenuButton<String>(
@@ -263,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage>
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 value: values[key],
-                                onChanged: (bool value) {
+                                onChanged: (bool? value) {
                                   setState(() {
                                     switch (key) {
                                       case Flags.STREET_2018_LEFT:
@@ -337,13 +333,13 @@ class _MyHomePageState extends State<MyHomePage>
       String leaderboardAndroid = Flags.LEADERBOARD_2018_RIGHT;
       String leaderboardIOS = Flags.LEADERBOARD_2018_RIGHT_IOS;
 
-      if (values[Flags.STREET_2018_LEFT]) {
+      if (values[Flags.STREET_2018_LEFT] ?? false) {
         leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
         leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
-      } else if (values[Flags.STREET_2022_LEFT]) {
+      } else if (values[Flags.STREET_2022_LEFT] ?? false) {
         leaderboardAndroid = Flags.LEADERBOARD_2022_LEFT;
         leaderboardIOS = Flags.LEADERBAORD_2022_LEFT_IOS;
-      } else if (values[Flags.STREET_2022_RIGHT]) {
+      } else if (values[Flags.STREET_2022_RIGHT] ?? false) {
         leaderboardAndroid = Flags.LEADERBOARD_2022_RIGHT;
         leaderboardIOS = Flags.LEADERBOARD_2022_RIGHT_IOS;
       }
@@ -409,8 +405,9 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  MyHomePage(this.title);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
