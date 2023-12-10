@@ -32,8 +32,8 @@ dependencies:
   json_annotation: ^4.1.0
   games_services: ^4.0.0
   flip_card: ^0.7.0
-  vibration: ^1.7.3
-  wakelock: ^0.6.2
+  vibration: ^1.8.4
+  wakelock_plus: ^1.1.4
   intl: any
 
 dev_dependencies:

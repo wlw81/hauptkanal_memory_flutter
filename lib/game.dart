@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:hauptkanalmemory/cardSelector.dart';
 import 'package:hauptkanalmemory/countdown.dart';
 import 'package:hauptkanalmemory/scoreDisplay.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/services.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'flags.dart';
 
@@ -50,7 +50,7 @@ class _MyAppState extends State<Game>
     }
 
     WidgetsBinding.instance.addObserver(this);
-    Wakelock.enable();
+    WakelockPlus.enable();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -83,7 +83,7 @@ class _MyAppState extends State<Game>
       WidgetsBinding.instance.removeObserver(this);
       _timer.cancel();
       _controller.dispose();
-      Wakelock.disable();
+      WakelockPlus.disable();
     } finally {
       super.dispose();
       submitScore(true);

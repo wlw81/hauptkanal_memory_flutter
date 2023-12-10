@@ -64,24 +64,17 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(color: Colors.white),
             bodyMedium: TextStyle(color: Colors.deepPurple[100])),
       ),
-      supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
+        AppLocalizations.delegate, // Add this line
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        // Check if the current device locale is supported
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
-          }
-        }
-        // If the locale of the device is not supported, use the first one
-        // from the list (English, in this case).
-        return supportedLocales.first;
-      },
-      home: MyHomePage( appName),
+      supportedLocales: [
+        Locale('en'), // English
+        Locale('de'), // Spanish
+      ],
+      home: MyHomePage(appName),
       title: appName,
     );
   }
