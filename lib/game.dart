@@ -45,9 +45,7 @@ class _MyAppState extends State<Game>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     playMusic();
 
-    if (!_timer.isActive) {
-      startTimer();
-    }
+    startTimer();
 
     WidgetsBinding.instance.addObserver(this);
     WakelockPlus.enable();
