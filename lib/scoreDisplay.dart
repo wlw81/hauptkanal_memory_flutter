@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hauptkanalmemory/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import "package:intl/intl.dart";
 
 class ScoreDisplay extends StatelessWidget {
@@ -24,7 +24,7 @@ class ScoreDisplay extends StatelessWidget {
                 padding: EdgeInsets.all(4.0),
                 color: Theme.of(context).colorScheme.primary,
                 child: Text(
-                    ( (currentGame) ? AppLocalizations.of(context).translate('score') +' '+_format.format(_value):  'Start →'),
+                    ( (currentGame) ? AppLocalizations.of(context)!.score +' '+_format.format(_value):  'Start →'),
                     style: GoogleFonts.robotoCondensed(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,

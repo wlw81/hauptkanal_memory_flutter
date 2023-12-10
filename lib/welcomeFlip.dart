@@ -1,6 +1,6 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:hauptkanalmemory/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WelcomeFlip extends StatelessWidget {
 
@@ -18,10 +18,10 @@ class WelcomeFlip extends StatelessWidget {
             child: Image.asset('assets/pbglion.png', scale: 5,),),
           Padding(padding: const EdgeInsets.all(8.0),
               child: Text(
-                  AppLocalizations.of(context).translate('introduction'), style: Theme
+                  AppLocalizations.of(context)!.introduction, style: Theme
                   .of(context)
                   .textTheme
-                  .bodyText1))
+                  .bodyLarge))
         ]),
       ),
       back: Card(
@@ -30,10 +30,10 @@ class WelcomeFlip extends StatelessWidget {
             .primaryColor,
         child: Padding(padding: const EdgeInsets.all(8.0),
             child: Text(
-                AppLocalizations.of(context).translate('legal'), style: Theme
+                AppLocalizations.of(context)!.legal, style: Theme
                 .of(context)
                 .textTheme
-                .bodyText1)),
+                .bodyLarge)),
       ),
     );
 

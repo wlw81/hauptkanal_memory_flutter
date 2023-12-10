@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:games_services/games_services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
@@ -65,9 +66,9 @@ class MyApp extends StatelessWidget {
       ),
       supportedLocales: [Locale('en', ''), Locale('de', '')],
       localizationsDelegates: [
-        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       localeResolutionCallback: (locale, supportedLocales) {
         // Check if the current device locale is supported
@@ -163,10 +164,10 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   handleMenuClick(String pValue) {
-    if (pValue == AppLocalizations.of(context).translate('scoreboard')) {
+    if (pValue == AppLocalizations.of(context)?.scoreboard) {
       GamesServices.showLeaderboards();
     } else {
-      String info = AppLocalizations.of(context).translate('legal');
+      String info = AppLocalizations.of(context)!.legal;
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -214,8 +215,8 @@ class _MyHomePageState extends State<MyHomePage>
                   color: Theme.of(context).primaryColor,
                   itemBuilder: (BuildContext context) {
                     return <String>[
-                      AppLocalizations.of(context).translate('scoreboard'),
-                      AppLocalizations.of(context).translate('about')
+                      AppLocalizations.of(context)!.scoreboard,
+                      AppLocalizations.of(context)!.about
                     ].map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
@@ -243,8 +244,8 @@ class _MyHomePageState extends State<MyHomePage>
                               padding: EdgeInsets.only(
                                   bottom: 8, left: 20, right: 20, top: 20),
                               child: Text(
-                                  AppLocalizations.of(context)
-                                      .translate('selectStreet')
+                                  AppLocalizations.of(context)!
+                                      .selectStreet
                                       .toUpperCase(),
                                   style:
                                       Theme.of(context).textTheme.bodyLarge)),
@@ -254,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
                                 title: Text(
-                                    AppLocalizations.of(context).translate(key),
+                                    key,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 value: values[key],
