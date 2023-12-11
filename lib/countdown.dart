@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hauptkanalmemory/flags.dart';
 
 class Countdown extends StatelessWidget {
-
-  int _secondsRemaining;
+  int _secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;
 
   Countdown(this._secondsRemaining);
 
@@ -21,8 +20,8 @@ class Countdown extends StatelessWidget {
         style: GoogleFonts.robotoCondensed(
             fontSize: 95,
             fontStyle: FontStyle.italic,
-            textStyle: (_secondsRemaining > 10 ? TextStyle(color: Colors.white54) : TextStyle(color: Colors.red[400]))))
-    ;
+            textStyle: (_secondsRemaining > 10
+                ? TextStyle(color: Colors.white54)
+                : TextStyle(color: Colors.red[400]))));
   }
-
 }

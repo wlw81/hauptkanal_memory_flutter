@@ -8,9 +8,11 @@ import 'package:games_services/games_services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
+import 'firebase_options.dart';
 import 'pbgLocalsLogo.dart';
 
 void main() {
@@ -134,7 +136,11 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   welcome() async {
-    await GamesServices.signIn();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    var s = await GamesServices.signIn();
+    print(s);
     GamesServices.unlock(
         achievement: Achievement(
             iOSID: Flags.ACHV_WELCOME_IOS,
@@ -247,8 +253,7 @@ class _MyHomePageState extends State<MyHomePage>
                               return CheckboxListTile(
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
-                                title: Text(
-                                    key,
+                                title: Text(key,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 value: values[key],

@@ -35,6 +35,7 @@ dependencies:
   vibration: ^1.8.4
   wakelock_plus: ^1.1.4
   intl: any
+  firebase_core: ^2.24.2
 
 dev_dependencies:
   flutter_test:
