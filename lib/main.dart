@@ -15,7 +15,13 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'firebase_options.dart';
 import 'pbgLocalsLogo.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   ErrorWidget.builder = (FlutterErrorDetails details) {
     bool inDebug = false;
     assert(() {
@@ -35,6 +41,7 @@ void main() {
       ),
     );
   };
+
   // Here we would normally runApp() the root widget, but to demonstrate
   // the error handling we artificially fail:
   return runApp(MyApp());
@@ -112,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
+    GameAuth.signIn();
     WidgetsBinding.instance.addObserver(this);
     playMusic();
     _controller = AnimationController(
@@ -136,22 +144,19 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   welcome() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    var s = await GamesServices.signIn();
-    print(s);
-    GamesServices.unlock(
+    final result = await GameAuth.signIn();
+    print(result);
+
+    final result2 = await Achievements.unlock(
         achievement: Achievement(
-            iOSID: Flags.ACHV_WELCOME_IOS,
-            androidID: Flags.ACHV_WELCOME,
-            percentComplete: 100));
+            androidID: Flags.ACHV_WELCOME, iOSID:  Flags.ACHV_WELCOME_IOS, percentComplete: 100));
+
   }
 
   firstRun() async {
-    return GamesServices.unlock(
-        achievement:
-            Achievement(androidID: Flags.ACHV_FIRSTRUN, percentComplete: 100));
+    return  await Achievements.unlock(
+        achievement: Achievement(
+            androidID:  Flags.ACHV_FIRSTRUN, iOSID:  Flags.ACHV_FIRSTRUN_IOS, percentComplete: 100));
   }
 
   @override
@@ -162,9 +167,13 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
-  handleMenuClick(String pValue) {
+  handleMenuClick(String pValue) async {
     if (pValue == AppLocalizations.of(context)?.scoreboard) {
-      GamesServices.showLeaderboards();
+      final result = await Leaderboards.loadLeaderboardScores(
+          scope: PlayerScope.global,
+          timeScope: TimeScope.allTime,
+          maxResults: 10);
+      print(result);
     } else {
       String info = AppLocalizations.of(context)!.legal;
       showDialog(

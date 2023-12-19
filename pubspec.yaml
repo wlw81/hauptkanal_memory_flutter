@@ -14,7 +14,7 @@ description: A game around the inner city of Papenburg.
 version: 1.1.4+36
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
 
 dependencies:
 
@@ -24,18 +24,15 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
   google_fonts: ^6.1.0
   assets_audio_player: ^3.0.3+6
-  json_annotation: ^4.1.0
+  firebase_core: ^2.24.2
   games_services: ^4.0.0
   flip_card: ^0.7.0
   vibration: ^1.8.4
   wakelock_plus: ^1.1.4
   intl: any
-  firebase_core: ^2.24.2
 
 dev_dependencies:
   flutter_test:
@@ -70,7 +67,6 @@ flutter:
     - assets/518305__mrthenoronha__stage-clear-8-bit.wav
     - assets/520937__mrthenoronha__8-bit-game-intro-loop.wav
     - assets/516824__mrthenoronha__get-item-4-8-bit.wav
-    - lang/de.json
-    - lang/en.json
+
 flutter_intl:
   enabled: true
