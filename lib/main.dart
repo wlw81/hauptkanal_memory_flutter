@@ -8,19 +8,13 @@ import 'package:games_services/games_services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 
-import 'firebase_options.dart';
 import 'pbgLocalsLogo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   ErrorWidget.builder = (FlutterErrorDetails details) {
     bool inDebug = false;
@@ -145,18 +139,24 @@ class _MyHomePageState extends State<MyHomePage>
 
   welcome() async {
     final result = await GameAuth.signIn();
-    print(result);
+    print('GameAuth Sign In ' + result.toString());
 
-    final result2 = await Achievements.unlock(
+    final result3 = await GameAuth.isSignedIn;
+    print('Sign in check result' + result3.toString());
+
+    await Achievements.unlock(
         achievement: Achievement(
-            androidID: Flags.ACHV_WELCOME, iOSID:  Flags.ACHV_WELCOME_IOS, percentComplete: 100));
-
+            androidID: Flags.ACHV_WELCOME,
+            iOSID: Flags.ACHV_WELCOME_IOS,
+            percentComplete: 100));
   }
 
   firstRun() async {
-    return  await Achievements.unlock(
+    return await Achievements.unlock(
         achievement: Achievement(
-            androidID:  Flags.ACHV_FIRSTRUN, iOSID:  Flags.ACHV_FIRSTRUN_IOS, percentComplete: 100));
+            androidID: Flags.ACHV_FIRSTRUN,
+            iOSID: Flags.ACHV_FIRSTRUN_IOS,
+            percentComplete: 100));
   }
 
   @override
