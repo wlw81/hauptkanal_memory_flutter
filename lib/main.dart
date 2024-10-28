@@ -262,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage>
                               return CheckboxListTile(
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
-                                title: Text(key,
+                                title: Text(getStreetNameForKey(key),
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 value: values[key],
@@ -326,6 +326,20 @@ class _MyHomePageState extends State<MyHomePage>
                 FloatingActionButtonLocation.centerDocked),
       ],
     );
+  }
+
+  String getStreetNameForKey(String key) {
+    switch (key) {
+      case Flags.STREET_2018_LEFT:
+        return AppLocalizations.of(context)!.left2018;
+      case Flags.STREET_2018_RIGHT:
+        return AppLocalizations.of(context)!.right2018;
+      case Flags.STREET_2022_LEFT:
+        return AppLocalizations.of(context)!.left2022;
+      case Flags.STREET_2022_RIGHT:
+      default:
+        return AppLocalizations.of(context)!.right2022;
+    }
   }
 
   onScoreChange(int pValue, bool pFinal) async {
