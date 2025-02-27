@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:games_services/games_services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 
+import 'l10n/app_localizations.dart';
 import 'pbgLocalsLogo.dart';
 
 Future<void> main() async {
@@ -67,12 +66,6 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(color: Colors.white),
             bodyMedium: TextStyle(color: Colors.deepPurple[100])),
       ),
-      localizationsDelegates: [
-        AppLocalizations.delegate, // Add this line
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
       supportedLocales: [
         Locale('en'), // English
         Locale('de'), // Spanish
@@ -94,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage>
   late AnimationController _animationControllerFAB;
   late Animation _animationFAB;
 
-  final assetsAudioPlayerEffects = AssetsAudioPlayer();
-  final assetsAudioPlayerMusic = AssetsAudioPlayer();
+  final assetsAudioPlayerEffects = AudioPlayer();
+  final assetsAudioPlayerMusic = AudioPlayer();
 
   Map<String, bool> values = {
     Flags.STREET_2018_LEFT: false,
@@ -105,9 +98,9 @@ class _MyHomePageState extends State<MyHomePage>
   };
 
   playMusic() async {
-    assetsAudioPlayerMusic.open(
-        Audio("assets/520937__mrthenoronha__8-bit-game-intro-loop.wav"),
-        loopMode: LoopMode.single);
+    assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
+    assetsAudioPlayerMusic.play(
+        AssetSource('assets/520937__mrthenoronha__8-bit-game-intro-loop.wav'));
   }
 
   @override
@@ -379,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (celebrated || lastScore == 0) {
-        assetsAudioPlayerMusic.play();
+        assetsAudioPlayerMusic.resume();
       }
     } else if (state == AppLifecycleState.paused) {
       assetsAudioPlayerMusic.pause();
@@ -388,16 +381,16 @@ class _MyHomePageState extends State<MyHomePage>
 
   playLevelFinishedMusic() async {
     assetsAudioPlayerMusic.stop();
-    await assetsAudioPlayerEffects
-        .open(Audio("assets/518305__mrthenoronha__stage-clear-8-bit.wav"));
+    assetsAudioPlayerEffects.play(
+        AssetSource('assets/518305__mrthenoronha__stage-clear-8-bit.wav'));
     celebrated = true;
   }
 
   _startGame() async {
     assetsAudioPlayerMusic.pause();
     celebrated = false;
-    await assetsAudioPlayerEffects
-        .open(Audio("assets/516824__mrthenoronha__get-item-4-8-bit.wav"));
+    assetsAudioPlayerEffects
+        .play(AssetSource('assets/516824__mrthenoronha__get-item-4-8-bit.wav'));
     String flag = 'error';
     values.forEach((key, value) {
       if (value == true) {

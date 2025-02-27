@@ -1,6 +1,6 @@
 import 'dart:developer' as developer;
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class GameCardItem extends StatefulWidget {
@@ -19,7 +19,7 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
   late AnimationController _controllerSlide;
   late Animation<Offset> _slideInAnimation;
   int beginAnimation = 0;
-  final _assetsAudioPlayer = AssetsAudioPlayer();
+  final _assetsAudioPlayer  = AudioPlayer();
   Offset _begin = Offset(0.0, 1.2);
 
   @override
@@ -62,7 +62,7 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
   _playAnimation() async {
     // first slide in, then let the card hover
     developer.log(widget.cardImage.image.toString());
-    _assetsAudioPlayer.open(Audio("assets/suck.wav"));
+    _assetsAudioPlayer.play(AssetSource('assets/suck.wav'));
     await _controllerSlide.forward().whenComplete(() => _hover());
   }
 

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'dart:developer' as developer;
 import 'dart:math';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:hauptkanalmemory/cardSelector.dart';
 import 'package:hauptkanalmemory/countdown.dart';
@@ -28,8 +28,8 @@ class Game extends StatefulWidget {
 
 class _MyAppState extends State<Game>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  final assetsAudioPlayer = AssetsAudioPlayer();
-  final assetsAudioPlayerMusic = AssetsAudioPlayer();
+  final assetsAudioPlayer = AudioPlayer();
+  final assetsAudioPlayerMusic =  AudioPlayer();
   int currentNumber = 0;
   int lastRandomNumber = 0;
   int score = 0;
@@ -132,13 +132,12 @@ class _MyAppState extends State<Game>
   }
 
   playFlickAudio() async {
-    assetsAudioPlayer.open(Audio("assets/flick.wav"));
+    assetsAudioPlayer.play(AssetSource('assets/flick.wav'));
   }
 
   playMusic() async {
-    assetsAudioPlayerMusic.open(
-        Audio("assets/515615__mrthenoronha__8-bit-game-theme.wav"),
-        loopMode: LoopMode.single);
+    assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
+    assetsAudioPlayerMusic.play(AssetSource('assets/515615__mrthenoronha__8-bit-game-theme.wav'));
   }
 
   playWrongAudio() async {
@@ -147,7 +146,7 @@ class _MyAppState extends State<Game>
         Vibration.vibrate(duration: 200);
       }
     } finally {
-      assetsAudioPlayer.open(Audio("assets/bad.mp3"));
+      assetsAudioPlayer.play(AssetSource('assets/bad.mp3'));
     }
   }
 
