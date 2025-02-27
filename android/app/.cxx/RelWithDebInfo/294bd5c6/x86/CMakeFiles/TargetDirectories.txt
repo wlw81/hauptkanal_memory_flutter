@@ -1,0 +1,2 @@
+C:/Users/thoma/Documents/flutter_apps/hauptkanalmemory/android/app/.cxx/RelWithDebInfo/294bd5c6/x86/CMakeFiles/edit_cache.dir
+C:/Users/thoma/Documents/flutter_apps/hauptkanalmemory/android/app/.cxx/RelWithDebInfo/294bd5c6/x86/CMakeFiles/rebuild_cache.dir
