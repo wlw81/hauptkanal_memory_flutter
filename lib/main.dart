@@ -7,9 +7,9 @@ import 'package:games_services/games_services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hauptkanalmemory/flags.dart';
 import 'package:hauptkanalmemory/game.dart';
+import 'package:hauptkanalmemory/l10n/app_localizations.dart';
 import 'package:hauptkanalmemory/welcomeFlip.dart';
 
-import 'l10n/app_localizations.dart';
 import 'pbgLocalsLogo.dart';
 
 Future<void> main() async {
@@ -49,6 +49,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: theme.copyWith(
         primaryColor: Colors.deepPurple[700],
         secondaryHeaderColor: Colors.deepPurple[100],
@@ -66,10 +68,6 @@ class MyApp extends StatelessWidget {
             bodyLarge: TextStyle(color: Colors.white),
             bodyMedium: TextStyle(color: Colors.deepPurple[100])),
       ),
-      supportedLocales: [
-        Locale('en'), // English
-        Locale('de'), // Spanish
-      ],
       home: MyHomePage(appName),
       title: appName,
     );
@@ -245,8 +243,8 @@ class _MyHomePageState extends State<MyHomePage>
                               padding: EdgeInsets.only(
                                   bottom: 8, left: 20, right: 20, top: 20),
                               child: Text(
-                                  AppLocalizations.of(context)!
-                                      .selectStreet
+                                  AppLocalizations.of(context)
+                                      !.selectStreet
                                       .toUpperCase(),
                                   style:
                                       Theme.of(context).textTheme.bodyLarge)),
