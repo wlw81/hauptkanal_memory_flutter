@@ -15,6 +15,10 @@ import 'pbgLocalsLogo.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final audioContext =
+      AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build();
+  await AudioPlayer.global.setAudioContext(audioContext);
+
   ErrorWidget.builder = (FlutterErrorDetails details) {
     bool inDebug = false;
     assert(() {
@@ -51,22 +55,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: theme.copyWith(
-        primaryColor: Colors.deepPurple[700],
-        secondaryHeaderColor: Colors.deepPurple[100],
-        canvasColor: Colors.deepPurple[100],
-        colorScheme: theme.colorScheme.copyWith(
-          secondary: Colors.purpleAccent,
-          primary: Colors.deepPurple[700],
-        ),
-        dividerColor: Colors.grey[400],
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            primary: Colors.purpleAccent,
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark),
+        useMaterial3: true,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: Colors.purpleAccent,
         ),
-        textTheme: TextTheme(
-            bodySmall: TextStyle(color: Colors.grey[900]),
-            bodyLarge: TextStyle(color: Colors.white),
-            bodyMedium: TextStyle(color: Colors.deepPurple[100])),
       ),
       home: MyHomePage(appName),
       title: appName,
@@ -78,6 +75,11 @@ class _MyHomePageState extends State<MyHomePage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   int lastScore = 0;
   bool celebrated = false;
+
+  String leaderboardAndroid = Flags.LEADERBOARD_2018_RIGHT;
+  String leaderboardIOS = Flags.LEADERBOARD_2018_RIGHT_IOS;
+
+  String selectedStreet = Flags.STREET_2018_LEFT;
 
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
@@ -97,8 +99,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   playMusic() async {
     assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
-    assetsAudioPlayerMusic.play(
-        AssetSource('assets/520937__mrthenoronha__8-bit-game-intro-loop.wav'));
+    assetsAudioPlayerMusic
+        .play(AssetSource('520937__mrthenoronha__8-bit-game-intro-loop.wav'));
   }
 
   @override
@@ -158,20 +160,17 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
-  handleMenuClick(String pValue) async {
+  handleMenuClick(String pValue) {
     if (pValue == AppLocalizations.of(context)?.scoreboard) {
-      final result = await Leaderboards.loadLeaderboardScores(
-          scope: PlayerScope.global,
-          timeScope: TimeScope.allTime,
-          maxResults: 10);
-      print(result);
+      Leaderboards.showLeaderboards(
+          androidLeaderboardID: leaderboardAndroid,
+          iOSLeaderboardID: leaderboardIOS);
     } else {
       String info = AppLocalizations.of(context)!.legal;
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).dividerColor,
             title: Text(info, style: Theme.of(context).textTheme.bodyLarge),
           );
         },
@@ -203,15 +202,16 @@ class _MyHomePageState extends State<MyHomePage>
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: Text(
-                widget.title,
-                style:
-                    GoogleFonts.roboto(color: Theme.of(context).primaryColor),
+              title: Center(
+                child: Text(
+                  widget.title.toUpperCase(),
+                  style: GoogleFonts.robotoCondensed(
+                      color: Colors.purple, fontWeight: FontWeight.bold),
+                ),
               ),
               actions: <Widget>[
                 PopupMenuButton<String>(
                   onSelected: handleMenuClick,
-                  color: Theme.of(context).primaryColor,
                   itemBuilder: (BuildContext context) {
                     return <String>[
                       AppLocalizations.of(context)!.scoreboard,
@@ -227,6 +227,21 @@ class _MyHomePageState extends State<MyHomePage>
               ],
             ),
             body: ListView(children: <Widget>[
+              Visibility(
+                visible: lastScore > 0,
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    AppLocalizations.of(context)!.score + ': ',
+                    style: GoogleFonts.robotoCondensed(color: Colors.purple),
+                  ),
+                  Text(
+                    lastScore.toString(),
+                    style: GoogleFonts.robotoCondensed(
+                        color: Colors.purple, fontWeight: FontWeight.bold),
+                  )
+                ]),
+              ),
               Padding(
                   padding:
                       EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
@@ -235,64 +250,79 @@ class _MyHomePageState extends State<MyHomePage>
                   padding:
                       EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
                   child: Card(
-                      color: Theme.of(context).primaryColor,
                       child: Column(
-                        children: [
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.only(
-                                  bottom: 8, left: 20, right: 20, top: 20),
-                              child: Text(
-                                  AppLocalizations.of(context)
-                                      !.selectStreet
-                                      .toUpperCase(),
-                                  style:
-                                      Theme.of(context).textTheme.bodyLarge)),
-                          Column(
-                            children: values.keys.map((String key) {
-                              return CheckboxListTile(
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text(getStreetNameForKey(key),
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                                value: values[key],
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    switch (key) {
-                                      case Flags.STREET_2018_LEFT:
-                                        values[Flags.STREET_2018_LEFT] = true;
-                                        values[Flags.STREET_2018_RIGHT] = false;
-                                        values[Flags.STREET_2022_LEFT] = false;
-                                        values[Flags.STREET_2022_RIGHT] = false;
-                                        break;
-                                      case Flags.STREET_2018_RIGHT:
-                                        values[Flags.STREET_2018_LEFT] = false;
-                                        values[Flags.STREET_2018_RIGHT] = true;
-                                        values[Flags.STREET_2022_LEFT] = false;
-                                        values[Flags.STREET_2022_RIGHT] = false;
-                                        break;
-                                      case Flags.STREET_2022_LEFT:
-                                        values[Flags.STREET_2018_LEFT] = false;
-                                        values[Flags.STREET_2018_RIGHT] = false;
-                                        values[Flags.STREET_2022_LEFT] = true;
-                                        values[Flags.STREET_2022_RIGHT] = false;
-                                        break;
-                                      case Flags.STREET_2022_RIGHT:
-                                      default:
-                                        values[Flags.STREET_2018_LEFT] = false;
-                                        values[Flags.STREET_2018_RIGHT] = false;
-                                        values[Flags.STREET_2022_LEFT] = false;
-                                        values[Flags.STREET_2022_RIGHT] = true;
-                                        break;
-                                    }
-                                  });
-                                },
-                              );
-                            }).toList(),
-                          ),
+                    children: [
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.only(
+                              bottom: 8, left: 20, right: 20, top: 20),
+                          child: Text(
+                              AppLocalizations.of(context)!
+                                  .selectStreet
+                                  .toUpperCase(),
+                              style: Theme.of(context).textTheme.bodyLarge)),
+                      SegmentedButton<String>(
+                        segments: [
+                          ButtonSegment<String>(
+                              value: Flags.STREET_2018_LEFT,
+                              label: Text(
+                                  getStreetNameForKey(Flags.STREET_2018_LEFT))),
+                          ButtonSegment<String>(
+                              value: Flags.STREET_2018_RIGHT,
+                              label: Text(getStreetNameForKey(
+                                  Flags.STREET_2018_RIGHT))),
+                          ButtonSegment<String>(
+                              value: Flags.STREET_2022_LEFT,
+                              label: Text(
+                                  getStreetNameForKey(Flags.STREET_2022_LEFT))),
+                          ButtonSegment<String>(
+                              value: Flags.STREET_2022_RIGHT,
+                              label: Text(getStreetNameForKey(
+                                  Flags.STREET_2022_RIGHT))),
                         ],
-                      ))),
+                        direction: Axis.vertical,
+                        style: SegmentedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24.0)),
+                        ),
+                        multiSelectionEnabled: false,
+                        onSelectionChanged: (p0) {
+                          selectedStreet = p0.first;
+                          switch (selectedStreet) {
+                            case Flags.STREET_2018_LEFT:
+                              values[Flags.STREET_2018_LEFT] = true;
+                              values[Flags.STREET_2018_RIGHT] = false;
+                              values[Flags.STREET_2022_LEFT] = false;
+                              values[Flags.STREET_2022_RIGHT] = false;
+                              break;
+                            case Flags.STREET_2018_RIGHT:
+                              values[Flags.STREET_2018_LEFT] = false;
+                              values[Flags.STREET_2018_RIGHT] = true;
+                              values[Flags.STREET_2022_LEFT] = false;
+                              values[Flags.STREET_2022_RIGHT] = false;
+                              break;
+                            case Flags.STREET_2022_LEFT:
+                              values[Flags.STREET_2018_LEFT] = false;
+                              values[Flags.STREET_2018_RIGHT] = false;
+                              values[Flags.STREET_2022_LEFT] = true;
+                              values[Flags.STREET_2022_RIGHT] = false;
+                              break;
+                            case Flags.STREET_2022_RIGHT:
+                            default:
+                              values[Flags.STREET_2018_LEFT] = false;
+                              values[Flags.STREET_2018_RIGHT] = false;
+                              values[Flags.STREET_2022_LEFT] = false;
+                              values[Flags.STREET_2022_RIGHT] = true;
+                              break;
+                          }
+                        },
+                        selected: <String>{selectedStreet},
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                    ],
+                  ))),
               PbgLocalsLogo(),
             ]),
             floatingActionButton: Container(
@@ -308,7 +338,7 @@ class _MyHomePageState extends State<MyHomePage>
                   color: Color.fromARGB(255, 27, 28, 30),
                   boxShadow: [
                     BoxShadow(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.deepPurple,
                         blurRadius: _animationFAB.value * 4,
                         spreadRadius: _animationFAB.value * 4)
                   ]),
@@ -342,9 +372,6 @@ class _MyHomePageState extends State<MyHomePage>
       playLevelFinishedMusic();
       await firstRun();
 
-      String leaderboardAndroid = Flags.LEADERBOARD_2018_RIGHT;
-      String leaderboardIOS = Flags.LEADERBOARD_2018_RIGHT_IOS;
-
       if (values[Flags.STREET_2018_LEFT] ?? false) {
         leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
         leaderboardIOS = Flags.LEADERBAORD_2018_LEFT_IOS;
@@ -362,7 +389,20 @@ class _MyHomePageState extends State<MyHomePage>
               iOSLeaderboardID: leaderboardIOS,
               value: pValue));
 
-      GamesServices.showLeaderboards(iOSLeaderboardID: leaderboardIOS);
+      /**
+       *       showDialog(
+          context: context,
+          builder: (context) {
+          return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.scoreboard),
+          content: Center(child: Text(pValue.toString())),
+          actions: [
+          ElevatedButton(onPressed: () => dispose(), child: Text('OK!')),
+          ],
+          );
+          },
+          );
+       */
     }
   }
 
@@ -379,8 +419,8 @@ class _MyHomePageState extends State<MyHomePage>
 
   playLevelFinishedMusic() async {
     assetsAudioPlayerMusic.stop();
-    assetsAudioPlayerEffects.play(
-        AssetSource('assets/518305__mrthenoronha__stage-clear-8-bit.wav'));
+    assetsAudioPlayerEffects
+        .play(AssetSource('518305__mrthenoronha__stage-clear-8-bit.wav'));
     celebrated = true;
   }
 
@@ -388,7 +428,7 @@ class _MyHomePageState extends State<MyHomePage>
     assetsAudioPlayerMusic.pause();
     celebrated = false;
     assetsAudioPlayerEffects
-        .play(AssetSource('assets/516824__mrthenoronha__get-item-4-8-bit.wav'));
+        .play(AssetSource('516824__mrthenoronha__get-item-4-8-bit.wav'));
     String flag = 'error';
     values.forEach((key, value) {
       if (value == true) {

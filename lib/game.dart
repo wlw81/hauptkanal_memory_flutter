@@ -29,7 +29,7 @@ class Game extends StatefulWidget {
 class _MyAppState extends State<Game>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   final assetsAudioPlayer = AudioPlayer();
-  final assetsAudioPlayerMusic =  AudioPlayer();
+  final assetsAudioPlayerMusic = AudioPlayer();
   int currentNumber = 0;
   int lastRandomNumber = 0;
   int score = 0;
@@ -102,9 +102,7 @@ class _MyAppState extends State<Game>
             }
           });
         } else {
-          setState(() {
-            secondsRemaining--;
-          });
+          setState(() => secondsRemaining--);
         }
       },
     );
@@ -132,21 +130,22 @@ class _MyAppState extends State<Game>
   }
 
   playFlickAudio() async {
-    assetsAudioPlayer.play(AssetSource('assets/flick.wav'));
+    assetsAudioPlayer.play(AssetSource('flick.wav'));
   }
 
   playMusic() async {
     assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
-    assetsAudioPlayerMusic.play(AssetSource('assets/515615__mrthenoronha__8-bit-game-theme.wav'));
+    assetsAudioPlayerMusic
+        .play(AssetSource('515615__mrthenoronha__8-bit-game-theme.wav'));
   }
 
   playWrongAudio() async {
     try {
-      if (await (Vibration.hasVibrator()) ?? false) {
+      if (await (Vibration.hasVibrator())) {
         Vibration.vibrate(duration: 200);
       }
     } finally {
-      assetsAudioPlayer.play(AssetSource('assets/bad.mp3'));
+      assetsAudioPlayer.play(AssetSource('bad.mp3'));
     }
   }
 
@@ -235,15 +234,6 @@ class _MyAppState extends State<Game>
     );
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed ||
-        state == AppLifecycleState.inactive) {
-      close(false);
-    } else if (state == AppLifecycleState.paused) {
-      assetsAudioPlayerMusic.pause();
-    }
-  }
 
   void preCacheNextImage() async {
     try {

@@ -62,7 +62,7 @@ class _MyAppState extends State<GameCardItem> with TickerProviderStateMixin {
   _playAnimation() async {
     // first slide in, then let the card hover
     developer.log(widget.cardImage.image.toString());
-    _assetsAudioPlayer.play(AssetSource('assets/suck.wav'));
+    _assetsAudioPlayer.play(AssetSource('suck.wav'));
     await _controllerSlide.forward().whenComplete(() => _hover());
   }
 

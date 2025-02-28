@@ -11,9 +11,6 @@ class WelcomeFlip extends StatelessWidget {
     return FlipCard(
       direction: FlipDirection.HORIZONTAL, // default
       front: Card(
-        color: Theme
-            .of(context)
-            .primaryColor,
         child: Column(children: <Widget>[
           Padding(padding: const EdgeInsets.all(8.0),
             child: Image.asset('assets/pbglion.png', scale: 5,),),
@@ -26,9 +23,6 @@ class WelcomeFlip extends StatelessWidget {
         ]),
       ),
       back: Card(
-        color: Theme
-            .of(context)
-            .primaryColor,
         child: Padding(padding: const EdgeInsets.all(8.0),
             child: Text(
                 AppLocalizations.of(context)!.legal, style: Theme
