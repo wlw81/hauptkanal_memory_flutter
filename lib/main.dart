@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage>
     Flags.STREET_2022_RIGHT: false,
   };
 
-  playMusic() async {
+  playMusic()  {
     assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
     assetsAudioPlayerMusic
         .play(AssetSource('520937__mrthenoronha__8-bit-game-intro-loop.wav'));
