@@ -5,12 +5,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hauptkanalmemory/flags.dart';
-import 'package:hauptkanalmemory/game.dart';
-import 'package:hauptkanalmemory/l10n/app_localizations.dart';
-import 'package:hauptkanalmemory/welcomeFlip.dart';
 
+import 'flags.dart';
+import 'game.dart';
+import 'l10n/app_localizations.dart';
 import 'pbgLocalsLogo.dart';
+import 'welcomeFlip.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

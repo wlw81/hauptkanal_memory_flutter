@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hauptkanalmemory/flags.dart';
+
+import 'flags.dart';
 
 class Countdown extends StatelessWidget {
   int _secondsRemaining = Flags.COUNTDOWN_IN_SECONDS;

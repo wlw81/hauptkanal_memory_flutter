@@ -5,14 +5,14 @@ import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:hauptkanalmemory/cardSelector.dart';
-import 'package:hauptkanalmemory/countdown.dart';
-import 'package:hauptkanalmemory/scoreDisplay.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/services.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'cardSelector.dart';
+import 'countdown.dart';
 import 'flags.dart';
+import 'scoreDisplay.dart';
 
 class Game extends StatefulWidget {
   final Function(int, bool) onScoreChange;

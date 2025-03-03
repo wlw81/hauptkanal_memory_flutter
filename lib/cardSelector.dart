@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hauptkanalmemory/gameCardItem.dart';
 
 import 'flags.dart';
+import 'gameCardItem.dart';
 
 class CardSelector extends StatelessWidget {
   final List<Image> _nextRandomImages;
