@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage>
     Flags.STREET_2022_RIGHT: false,
   };
 
-  playMusic()  {
+  playMusic() {
     assetsAudioPlayerMusic.setReleaseMode(ReleaseMode.loop);
     assetsAudioPlayerMusic
         .play(AssetSource('520937__mrthenoronha__8-bit-game-intro-loop.wav'));
@@ -162,9 +162,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   handleMenuClick(String pValue) {
     if (pValue == AppLocalizations.of(context)?.scoreboard) {
-      Leaderboards.showLeaderboards(
-          androidLeaderboardID: leaderboardAndroid,
-          iOSLeaderboardID: leaderboardIOS);
+      showSelectedLeaderboard();
     } else {
       String info = AppLocalizations.of(context)!.legal;
       showDialog(
@@ -176,6 +174,12 @@ class _MyHomePageState extends State<MyHomePage>
         },
       );
     }
+  }
+
+  void showSelectedLeaderboard() {
+    Leaderboards.showLeaderboards(
+        androidLeaderboardID: leaderboardAndroid,
+        iOSLeaderboardID: leaderboardIOS);
   }
 
   @override
@@ -197,154 +201,167 @@ class _MyHomePageState extends State<MyHomePage>
           ),
         ),
         Scaffold(
+          backgroundColor: Colors.transparent,
+          // <-- SCAFFOLD WITH TRANSPARENT BG
+          appBar: AppBar(
             backgroundColor: Colors.transparent,
-            // <-- SCAFFOLD WITH TRANSPARENT BG
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Center(
-                child: Text(
-                  widget.title.toUpperCase(),
-                  style: GoogleFonts.robotoCondensed(
-                      color: Colors.purple, fontWeight: FontWeight.bold),
-                ),
+            elevation: 0,
+            title: Center(
+              child: Text(
+                widget.title.toUpperCase(),
+                style: GoogleFonts.robotoCondensed(
+                    color: Colors.purple,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32),
               ),
-              actions: <Widget>[
-                PopupMenuButton<String>(
-                  onSelected: handleMenuClick,
-                  itemBuilder: (BuildContext context) {
-                    return <String>[
-                      AppLocalizations.of(context)!.scoreboard,
-                      AppLocalizations.of(context)!.about
-                    ].map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
-                  },
-                ),
-              ],
             ),
-            body: ListView(children: <Widget>[
+            actions: <Widget>[
+              PopupMenuButton<String>(
+                onSelected: handleMenuClick,
+                itemBuilder: (BuildContext context) {
+                  return <String>[
+                    AppLocalizations.of(context)!.scoreboard,
+                    AppLocalizations.of(context)!.about
+                  ].map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              ),
+            ],
+          ),
+          body: Stack(
+            children: [
+              ListView(children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(
+                        bottom: 8, left: 20, right: 20, top: 20),
+                    child: WelcomeFlip()),
+                Padding(
+                    padding: EdgeInsets.only(
+                        bottom: 8, left: 20, right: 20, top: 20),
+                    child: Card(
+                        child: Column(
+                      children: [
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.only(
+                                bottom: 8, left: 20, right: 20, top: 20),
+                            child: Text(
+                                AppLocalizations.of(context)!
+                                    .selectStreet
+                                    .toUpperCase(),
+                                style: Theme.of(context).textTheme.bodyLarge)),
+                        SegmentedButton<String>(
+                          segments: [
+                            ButtonSegment<String>(
+                                value: Flags.STREET_2018_LEFT,
+                                label: Text(getStreetNameForKey(
+                                    Flags.STREET_2018_LEFT))),
+                            ButtonSegment<String>(
+                                value: Flags.STREET_2018_RIGHT,
+                                label: Text(getStreetNameForKey(
+                                    Flags.STREET_2018_RIGHT))),
+                            ButtonSegment<String>(
+                                value: Flags.STREET_2022_LEFT,
+                                label: Text(getStreetNameForKey(
+                                    Flags.STREET_2022_LEFT))),
+                            ButtonSegment<String>(
+                                value: Flags.STREET_2022_RIGHT,
+                                label: Text(getStreetNameForKey(
+                                    Flags.STREET_2022_RIGHT))),
+                          ],
+                          direction: Axis.vertical,
+                          style: SegmentedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0)),
+                          ),
+                          multiSelectionEnabled: false,
+                          onSelectionChanged: (p0) {
+                            selectedStreet = p0.first;
+                            switch (selectedStreet) {
+                              case Flags.STREET_2018_LEFT:
+                                values[Flags.STREET_2018_LEFT] = true;
+                                values[Flags.STREET_2018_RIGHT] = false;
+                                values[Flags.STREET_2022_LEFT] = false;
+                                values[Flags.STREET_2022_RIGHT] = false;
+                                break;
+                              case Flags.STREET_2018_RIGHT:
+                                values[Flags.STREET_2018_LEFT] = false;
+                                values[Flags.STREET_2018_RIGHT] = true;
+                                values[Flags.STREET_2022_LEFT] = false;
+                                values[Flags.STREET_2022_RIGHT] = false;
+                                break;
+                              case Flags.STREET_2022_LEFT:
+                                values[Flags.STREET_2018_LEFT] = false;
+                                values[Flags.STREET_2018_RIGHT] = false;
+                                values[Flags.STREET_2022_LEFT] = true;
+                                values[Flags.STREET_2022_RIGHT] = false;
+                                break;
+                              case Flags.STREET_2022_RIGHT:
+                              default:
+                                values[Flags.STREET_2018_LEFT] = false;
+                                values[Flags.STREET_2018_RIGHT] = false;
+                                values[Flags.STREET_2022_LEFT] = false;
+                                values[Flags.STREET_2022_RIGHT] = true;
+                                break;
+                            }
+                          },
+                          selected: <String>{selectedStreet},
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                      ],
+                    ))),
+                PbgLocalsLogo(),
+              ]),
+            ],
+          ),
+          floatingActionButton: Column(
+            children: [
+              Spacer(),
               Visibility(
                 visible: lastScore > 0,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    AppLocalizations.of(context)!.score + ': ',
-                    style: GoogleFonts.robotoCondensed(color: Colors.purple),
-                  ),
-                  Text(
-                    lastScore.toString(),
-                    style: GoogleFonts.robotoCondensed(
-                        color: Colors.purple, fontWeight: FontWeight.bold),
-                  )
-                ]),
-              ),
-              Padding(
-                  padding:
-                      EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
-                  child: WelcomeFlip()),
-              Padding(
-                  padding:
-                      EdgeInsets.only(bottom: 8, left: 20, right: 20, top: 20),
-                  child: Card(
-                      child: Column(
+                child: Column(
                     children: [
-                      Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.only(
-                              bottom: 8, left: 20, right: 20, top: 20),
-                          child: Text(
-                              AppLocalizations.of(context)!
-                                  .selectStreet
-                                  .toUpperCase(),
-                              style: Theme.of(context).textTheme.bodyLarge)),
-                      SegmentedButton<String>(
-                        segments: [
-                          ButtonSegment<String>(
-                              value: Flags.STREET_2018_LEFT,
-                              label: Text(
-                                  getStreetNameForKey(Flags.STREET_2018_LEFT))),
-                          ButtonSegment<String>(
-                              value: Flags.STREET_2018_RIGHT,
-                              label: Text(getStreetNameForKey(
-                                  Flags.STREET_2018_RIGHT))),
-                          ButtonSegment<String>(
-                              value: Flags.STREET_2022_LEFT,
-                              label: Text(
-                                  getStreetNameForKey(Flags.STREET_2022_LEFT))),
-                          ButtonSegment<String>(
-                              value: Flags.STREET_2022_RIGHT,
-                              label: Text(getStreetNameForKey(
-                                  Flags.STREET_2022_RIGHT))),
-                        ],
-                        direction: Axis.vertical,
-                        style: SegmentedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0)),
-                        ),
-                        multiSelectionEnabled: false,
-                        onSelectionChanged: (p0) {
-                          selectedStreet = p0.first;
-                          switch (selectedStreet) {
-                            case Flags.STREET_2018_LEFT:
-                              values[Flags.STREET_2018_LEFT] = true;
-                              values[Flags.STREET_2018_RIGHT] = false;
-                              values[Flags.STREET_2022_LEFT] = false;
-                              values[Flags.STREET_2022_RIGHT] = false;
-                              break;
-                            case Flags.STREET_2018_RIGHT:
-                              values[Flags.STREET_2018_LEFT] = false;
-                              values[Flags.STREET_2018_RIGHT] = true;
-                              values[Flags.STREET_2022_LEFT] = false;
-                              values[Flags.STREET_2022_RIGHT] = false;
-                              break;
-                            case Flags.STREET_2022_LEFT:
-                              values[Flags.STREET_2018_LEFT] = false;
-                              values[Flags.STREET_2018_RIGHT] = false;
-                              values[Flags.STREET_2022_LEFT] = true;
-                              values[Flags.STREET_2022_RIGHT] = false;
-                              break;
-                            case Flags.STREET_2022_RIGHT:
-                            default:
-                              values[Flags.STREET_2018_LEFT] = false;
-                              values[Flags.STREET_2018_RIGHT] = false;
-                              values[Flags.STREET_2022_LEFT] = false;
-                              values[Flags.STREET_2022_RIGHT] = true;
-                              break;
-                          }
-                        },
-                        selected: <String>{selectedStreet},
+                      Text(
+                        AppLocalizations.of(context)!.lastScore + ': ',
+                        style:
+                        GoogleFonts.robotoCondensed(color: Colors.purple),
                       ),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                    ],
-                  ))),
-              PbgLocalsLogo(),
-            ]),
-            floatingActionButton: Container(
-              width: 64,
-              height: 64,
-              margin: const EdgeInsets.all(32.0),
-              child: FloatingActionButton(
-                onPressed: _startGame,
-                child: Icon(Icons.play_arrow),
+                      Text(
+                        lastScore.toString(),
+                        style: GoogleFonts.robotoCondensed(
+                            color: Colors.purple,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ]),
               ),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromARGB(255, 27, 28, 30),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.deepPurple,
-                        blurRadius: _animationFAB.value * 4,
-                        spreadRadius: _animationFAB.value * 4)
-                  ]),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked),
+              Container(
+                width: 64,
+                height: 64,
+                margin: const EdgeInsets.all(8.0),
+                child: FloatingActionButton(
+                  onPressed: _startGame,
+                  child: Icon(Icons.play_arrow),
+                ),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color.fromARGB(255, 27, 28, 30),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.deepPurple,
+                          blurRadius: _animationFAB.value * 4,
+                          spreadRadius: _animationFAB.value * 4)
+                    ]),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -363,14 +380,14 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
-  onScoreChange(int pValue, bool pFinal) async {
+  onScoreChange(int pValue, bool pFinal) {
     if (!pFinal) {
       setState(() {
         lastScore = pValue;
       });
     } else {
       playLevelFinishedMusic();
-      await firstRun();
+      firstRun();
 
       if (values[Flags.STREET_2018_LEFT] ?? false) {
         leaderboardAndroid = Flags.LEADERBOARD_2018_LEFT;
@@ -383,26 +400,13 @@ class _MyHomePageState extends State<MyHomePage>
         leaderboardIOS = Flags.LEADERBOARD_2022_RIGHT_IOS;
       }
 
-      await GamesServices.submitScore(
+      GamesServices.submitScore(
           score: Score(
               androidLeaderboardID: leaderboardAndroid,
               iOSLeaderboardID: leaderboardIOS,
               value: pValue));
 
-      /**
-       *       showDialog(
-          context: context,
-          builder: (context) {
-          return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.scoreboard),
-          content: Center(child: Text(pValue.toString())),
-          actions: [
-          ElevatedButton(onPressed: () => dispose(), child: Text('OK!')),
-          ],
-          );
-          },
-          );
-       */
+      showSelectedLeaderboard();
     }
   }
 

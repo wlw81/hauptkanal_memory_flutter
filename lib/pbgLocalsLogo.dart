@@ -11,8 +11,8 @@ class PbgLocalsLogo extends StatelessWidget {
             'supported by',
             style: Theme.of(context)
                 .textTheme
-                .bodySmall
-                ?.copyWith(color: Theme.of(context).primaryColor),
+                .labelMedium
+                ,
           ),
           Image.asset(
             'assets/pbgLocals.png',
